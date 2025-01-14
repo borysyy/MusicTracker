@@ -1,0 +1,172 @@
+{% extends "core/base.html" %} 
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block style %} 
+
+<style>
+
+  /* Carousel base class */
+  .carousel {
+      margin-bottom: 4rem;
+  }
+
+  /* Adjust the carousel height for various screen sizes */
+  .carousel-item {
+      height: 30rem; /* Default height for larger screens */
+  }
+
+  /* Ensure images are responsive and stay within constraints */
+  .carousel-item img {
+    height: 30rem;
+    object-fit: cover ; /* Keeps the image aspect ratio and fills the space */
+  }
+
+  /* Adjustments for smaller screens */
+  @media (max-width: 768px) {
+      .carousel-item {
+          height: 35rem; /* Shorter height for smaller screens */
+      }
+
+      .carousel-item img {
+        height: calc(35rem / 3);
+        object-fit: cover ;
+    }
+  }
+
+  @media (max-width: 576px) {
+      .carousel-item {
+          height: 40rem; /* Further reduce height for very small screens */
+      }
+
+      .carousel-item img {
+        height: calc(40rem / 3);
+        object-fit: cover ;
+    }
+  }
+
+  /* Center align the text within the three columns below the carousel */
+  .marketing .col-lg-4 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+  }
+
+  .marketing img {
+    width: 140;
+    height: 140;
+    object-fit: cover;
+  }
+
+  #myCarousel .carousel-indicators button{
+    background-color: white;
+    border: 1px solid white; 
+  }
+
+
+</style>
+
+
+{% endblock %}
+
+{% block main %} 
+
+
+<div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner border-bottom border-white">
+
+    <div class="carousel-item active">
+      <div class="container-fluid">
+        <div class="row g-0"> <!-- Use 'g-0' to remove gutter space between columns -->
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Judgy.png' %}" class="d-block w-100" alt="Slide 1">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Vanderbilt.png' %}" class="d-block w-100" alt="Slide 2">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/NY.png' %}" class="d-block w-100" alt="Slide 3">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="carousel-item">
+      <div class="container-fluid">
+        <div class="row g-0">
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Judgy.png' %}" class="d-block w-100" alt="Slide 4">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Vanderbilt.png' %}" class="d-block w-100" alt="Slide 5">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/NY.png' %}" class="d-block w-100" alt="Slide 6">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="container-fluid">
+        <div class="row g-0">
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Judgy.png' %}" class="d-block w-100" alt="Slide 7">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/Vanderbilt.png' %}" class="d-block w-100" alt="Slide 8">
+          </div>
+          <div class="col-12 col-md-4">
+            <img src="{% static 'core/images/NY.png' %}" class="d-block w-100" alt="Slide 9">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+  <div class="container marketing">
+
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+      <div class="col-lg-4">
+        <a href="https://github.com/borysyy" target="_blank">
+          <img class="rounded-circle" src="{% static 'core/images/Github_logo.png' %}" alt="Github Logo"></img>
+        </a>
+        <h2 class="fw-normal">GitHub</h2>
+      </div>
+      <div class="col-lg-4">
+        <a href="https://www.linkedin.com/in/yaroslavborysyuk" target="_blank">
+          <img class="rounded-circle" src="{% static 'core/images/Linkedin_logo.png' %}" alt="LinkedIn Logo"></img>
+        </a>
+        <h2 class="fw-normal">LinkedIn</h2>
+      </div>
+      <div class="col-lg-4">
+        <a href="{% static 'core/resume/YaroslavBorysyukResume.pdf' %}" target="_blank">
+          <img class="rounded-circle" src="{% static 'core/images/Resume_logo.png' %}" alt="Resume Logo"></img>
+        </a>
+        <h2 class="fw-normal">Resume</h2>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
