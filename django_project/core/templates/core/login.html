@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block main %}
+
+{% for errors in form.errors.values %}
+  {% for error in errors %}
+    <div
+      class="alert alert-danger alert-dismissible fade fixed-top show text-center"
+      role="alert"
+    >
+      {{ error }}
+      <button class="btn btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endfor %}
+
+<div
+  class="align-items-center d-flex justify-content-center text-center"
+  style="height: calc(100vh - 7.5rem)"
+>
+  <form method="post">
+    {% csrf_token %}
+
+    <h2>Log In</h2>
+
+    <div class="my-3">
+      <div class="form-floating">
+        {{ form.username }}
+        <label for="{form.user.id_for_label}">Username</label>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <div class="form-floating">
+        {{ form.password }}
+        <label for="{form.password.id_for_label}">Password</label>
+      </div>
+    </div>
+
+    <button class="btn btn-primary p-2 w-100">LOG IN</button>
+  </form>
+</div>
+
+{% endblock %}

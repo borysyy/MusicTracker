@@ -1,3 +1,5 @@
+from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -19,7 +21,7 @@ class CustomUserCreationForm(UserCreationForm):
                 "id": "username",
                 "class": "form-control",
                 "autofocus": True,
-                "placeholder": 'Username'
+                "placeholder": "Username"
             }
         )
         
@@ -28,7 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
                 "id": "first_name",
                 "class": "form-control",
                 "autofocus": False,
-                "placeholder": 'First Name'
+                "placeholder": "First Name"
             }
         )
         
@@ -51,3 +53,47 @@ class CustomUserCreationForm(UserCreationForm):
                 "placeholder": "Password Confirmation"
             }
         )
+        
+class AuthenticationForm(forms.Form):
+    username = forms.CharField(
+        max_length=254,
+        widget=forms.TextInput(
+            attrs={
+                "id": "username",
+                "class": "form-control",
+                "autocomplete": "username",
+                "autfocus": True,
+                "placeholder": "Username"
+            }
+        )
+    )
+    
+    password = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "id": "password",
+                "class": "form-control",
+                "autocomplete": "current-password",
+                "autofocus": False,
+                "placeholder": "Password",
+            }
+        ),
+    )
+    
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.request = request
+        self.user = None
+
+    def clean(self):
+        username = self.cleaned_data.get("username")
+        password = self.cleaned_data.get("password")
+        if username is not None and password:
+            self.user = authenticate(self.request, username=username, password=password)
+            if self.user is None:
+                raise forms.ValidationError("Invalid login. Please enter the correct email and password.")
+        return self.cleaned_data
+
+    def get_user(self):
+        return self.user
