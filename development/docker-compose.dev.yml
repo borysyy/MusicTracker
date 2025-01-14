@@ -1,0 +1,26 @@
+name: music-tracker
+services:
+  db:
+    container_name: music_tracker_mysql_dev
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      timeout: 20s
+      retries: 10 
+      
+volumes:
+  data:

@@ -1,0 +1,64 @@
+##########################################################
+#                                                        #
+#               Gitignore for Music Tracker              #
+#                                                        #
+##########################################################
+
+########################################
+#                                      #
+#          Root of file path           #
+#                                      #
+########################################
+
+# Include the root of the project file
+!/
+
+# Exclude everything inside of project
+/*
+
+########################################
+#                                      #
+#           Nginx Directory            #
+#                                      #
+########################################
+!nginx/
+
+########################################
+#                                      #
+#        Developement Directory        #
+#                                      #
+########################################
+
+!development/
+development/*
+!development/docker-compose.dev.yml
+!development/Dockerfile.mysql
+
+
+########################################
+#                                      #
+#   Main Django files and directories  #
+#                                      #
+########################################
+
+!django_project/
+django_project/*
+!django_project/core
+!django_project/mysite
+!django_project/manage.py
+
+########################################
+#                                      #
+#                 Misc.                #
+#                                      #
+########################################
+
+# Requirements files
+!requirements.in
+!requirements.txt
+
+# Other
+**/__pycache__
+**/.env
+!README.md
+!.gitignore
