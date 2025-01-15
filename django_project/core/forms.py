@@ -1,18 +1,19 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from .models import User
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ["username", "first_name" ,"password1", "password2"]
+        fields = ["username", "first_name", "password1", "password2", "private", "profile_picture"]
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         self.fields["username"].required = True
         self.fields["first_name"].required = True
+        self.fields["private"].required = True
         self.fields["password1"].required = True
         self.fields["password2"].required = True
         
@@ -34,6 +35,16 @@ class CustomUserCreationForm(UserCreationForm):
             }
         )
         
+        self.fields["private"].widget = forms.CheckboxInput()
+        self.fields["private"].required = False
+        self.fields["private"].widget.attrs.update(
+            {
+                "id": "private",
+                "class": "form-check-input",
+                "required": False
+            }
+        )
+          
         self.fields["password1"].widget.attrs.update(
             {
                 "id": "password1",
@@ -51,6 +62,14 @@ class CustomUserCreationForm(UserCreationForm):
                 "autocomplete": "new-password",
                 "autofocus": False,
                 "placeholder": "Password Confirmation"
+            }
+        )
+        
+        self.fields["profile_picture"].widget.attrs.update(
+            {
+                "id": "profile_picture",
+                "class": "form-control-file",
+                "accept": "image/*",
             }
         )
         

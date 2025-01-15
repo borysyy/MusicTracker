@@ -11,8 +11,15 @@
           <div class="align-items-center d-flex"> 
 
             <div class="dropdown">
-              <button class="btn" data-bs-toggle="dropdown">
-                <i class="bi bi-person" style="font-size: 1.5rem"></i>
+              <button class="btn profile-btn" data-bs-toggle="dropdown">
+
+                {% if user.is_authenticated %}
+                  <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile-pic" class="profile-pic">
+
+                {% else %}
+                <img src="{{ MEDIA_URL }}/profile_pictures/default_profile.jpg" alt="Default profile-pic" class="profile-pic">
+
+                {% endif %}
               </button>
               <ul class="dropdown-menu">
                 {% if user.is_authenticated %}

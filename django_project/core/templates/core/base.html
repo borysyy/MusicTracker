@@ -19,9 +19,36 @@
     />
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+
+      .profile-btn {
+        padding: 0; /* Remove default padding */
+        border: none; /* Remove default border */
+        background: none; /* Remove default background */
+        border-radius: 50%; /* Make the button round */
+        width: 50px; /* Match the profile picture size */
+        height: 50px; /* Match the profile picture size */
+        display: flex; /* Center the image inside the button */
+        align-items: center; /* Vertical alignment */
+        justify-content: center; /* Horizontal alignment */
+        overflow: hidden; /* Ensure the image doesn't overflow */
+      }
+
+      .profile-pic {
+        width: 100%; /* Make the image fill the button */
+        height: 100%; /* Make the image fill the button */
+        object-fit: cover; /* Ensure the image covers the button area */
+      }
 
 
-    {% block style %} {% endblock %}
+    </style>
+
+    {% block style %} 
+ 
+
+    {% endblock %}
+
     {% block script %} {% endblock %}
 
   </head>

@@ -27,7 +27,7 @@ def login_view(request):
 def register_view(request):
     context = {}
     if request.method == "POST":
-        form = CustomUserCreationForm(data=request.POST)
+        form = CustomUserCreationForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             user = form.save()
             login(request, user)

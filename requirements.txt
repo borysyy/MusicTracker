@@ -12,6 +12,8 @@ cryptography==44.0.0
     # via -r requirements.in
 django==5.1.4
     # via -r requirements.in
+pillow==11.1.0
+    # via -r requirements.in
 pycparser==2.22
     # via cffi
 pymysql==1.1.1
