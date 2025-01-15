@@ -14,10 +14,10 @@
               <button class="btn profile-btn" data-bs-toggle="dropdown">
 
                 {% if user.is_authenticated %}
-                  <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile-pic" class="profile-pic">
+                  <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile picture" class="profile-pic">
 
                 {% else %}
-                <img src="{{ MEDIA_URL }}/profile_pictures/default_profile.jpg" alt="Default profile-pic" class="profile-pic">
+                <img src="{{ MEDIA_URL }}/profile_pictures/default_profile.jpg" alt="Default profile picture" class="profile-pic">
 
                 {% endif %}
               </button>
@@ -26,7 +26,7 @@
                   <li>
                     <a
                       class="align-items-center d-flex dropdown-item"
-                      href="{% url 'core:home' %}"
+                      href="{% url 'core:profile' user.username %}"
                     >
                       <i class="bi bi-person me-3" style="font-size: 1.5rem"></i>
                       <div>
