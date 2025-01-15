@@ -28,17 +28,17 @@
 
 {% block main %}
 
-{% if not user.private or current_user == user.username %}
+{% if not profile_user.private or current_user == profile_user.username %}
 
 <div class="container mt-2">
     <div class="row justify-content-end">
         
         <div class="col-5">
             <div>
-                <h1>{{ user.username }}</h1>
+                <h1>{{ profile_user.username }}</h1>
             </div>
             <div>
-                <h3>Date Joined: {{ user.date_joined|date:"F j Y" }}</h3>
+                <h3>Date Joined: {{ profile_user.date_joined|date:"F j Y" }}</h3>
             </div>
 
         </div>

@@ -42,12 +42,12 @@ def register_view(request):
 
 def profile_view(request, username):
     
-    user = get_object_or_404(User, username=username)
+    profile_user = get_object_or_404(User, username=username)
     
     current_user = request.user.get_username()
     
     context = {
-        'user': user,
+        'profile_user': profile_user,
         'current_user': current_user
     }
     
