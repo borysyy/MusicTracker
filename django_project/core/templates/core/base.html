@@ -56,6 +56,30 @@
 
     <main class="d-flex flex-column flex-grow-1 flex-shrink-1" > 
         {% include "core/includes/header.html" %}
+
+        {% if messages%}
+          {% for success_message in messages %}
+            <div
+              class="alert alert-success alert-dismissible fade fixed-top show text-center"
+              role="alert"
+            >
+              {{ success_message }}
+              <button class="btn btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        {% for errors in form.errors.values %}
+          {% for error in errors %}
+            <div
+              class="alert alert-danger alert-dismissible fade fixed-top show text-center"
+              role="alert"
+            >
+              {{ error }}
+              <button class="btn btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endfor %}
     
         <div class="flex-grow-1 flex-shrink-1">
           {% block main %}{% endblock %}

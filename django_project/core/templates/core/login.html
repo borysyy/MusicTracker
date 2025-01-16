@@ -4,17 +4,7 @@
 
 {% block main %}
 
-{% for errors in form.errors.values %}
-  {% for error in errors %}
-    <div
-      class="alert alert-danger alert-dismissible fade fixed-top show text-center"
-      role="alert"
-    >
-      {{ error }}
-      <button class="btn btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  {% endfor %}
-{% endfor %}
+
 
 <div
   class="align-items-center d-flex justify-content-center text-center"

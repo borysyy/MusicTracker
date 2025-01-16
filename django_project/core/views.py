@@ -10,6 +10,7 @@ def home_view(request):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, "Successfully logged out")
     return redirect("core:home")
 
 def login_view(request):
@@ -19,6 +20,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            messages.success(request, "Successfully logged in as " + user.username)
             return redirect("core:profile", user.username)
     else:
         form = AuthenticationForm()
@@ -32,8 +34,8 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Your account has been created")
-            return redirect("core:home")
+            messages.success(request,"Your account " + user.username + " has been created")
+            return redirect("core:profile", user.username)
     else:
         form = CustomUserCreationForm()
         
