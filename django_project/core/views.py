@@ -20,7 +20,8 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, "Successfully logged in as " + user.username)
+            string = f"Sucessfully logged in as {user.username}"
+            messages.success(request, string)
             return redirect("core:profile", user.username)
     else:
         form = AuthenticationForm()
@@ -34,7 +35,8 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request,"Your account " + user.username + " has been created")
+            string = f"Your account {user.username} has been created"
+            messages.success(request, string)
             return redirect("core:profile", user.username)
     else:
         form = CustomUserCreationForm()
@@ -45,13 +47,11 @@ def register_view(request):
 def profile_view(request, username):
     
     profile_user = get_object_or_404(User, username=username)
-    
     current_user = request.user.get_username()
     
     context = {
         'profile_user': profile_user,
         'current_user': current_user
     }
-    
     
     return render(request, "core/base_profile.html", context)

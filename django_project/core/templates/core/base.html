@@ -63,8 +63,9 @@
               class="alert alert-success alert-dismissible fade fixed-top show text-center"
               role="alert"
             >
+            <button class="btn w-100 text-center" data-bs-dismiss="alert">
               {{ success_message }}
-              <button class="btn btn-close" data-bs-dismiss="alert"></button>
+            </button>
             </div>
           {% endfor %}
         {% endif %}
@@ -75,8 +76,9 @@
               class="alert alert-danger alert-dismissible fade fixed-top show text-center"
               role="alert"
             >
+            <button class="btn w-100 text-center" data-bs-dismiss="alert">
               {{ error }}
-              <button class="btn btn-close" data-bs-dismiss="alert"></button>
+            </button>
             </div>
           {% endfor %}
         {% endfor %}

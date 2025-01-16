@@ -111,7 +111,7 @@ class AuthenticationForm(forms.Form):
         if username is not None and password:
             self.user = authenticate(self.request, username=username, password=password)
             if self.user is None:
-                raise forms.ValidationError("Invalid login. Please enter the correct email and password.")
+                raise forms.ValidationError("Invalid login. Please enter the correct username and password.")
         return self.cleaned_data
 
     def get_user(self):
