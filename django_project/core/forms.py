@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from .models import User, Collection
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -36,7 +36,6 @@ class CustomUserCreationForm(UserCreationForm):
         )
         
         self.fields["private"].widget = forms.CheckboxInput()
-        self.fields["private"].required = False
         self.fields["private"].widget.attrs.update(
             {
                 "id": "private",
@@ -116,3 +115,43 @@ class AuthenticationForm(forms.Form):
 
     def get_user(self):
         return self.user
+    
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ["name", "description", "collection_type", "thumbnail"]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "id": "name",
+                    "class": "form-control",
+                    "autofocus": True,
+                    "placeholder": "Collection Name",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "id": "description",
+                    "class": "form-control",
+                    "placeholder": "Description of your collection",
+                }
+            ),
+            "collection_type": forms.Select(
+                attrs={
+                    "id": "collection_type",
+                    "class": "form-control",
+                }
+            ),
+            "thumbnail": forms.ClearableFileInput(
+                attrs={
+                    "id": "thumbnail",
+                    "class": "form-control-file",
+                    "accept": "image/*",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name"].required = True
+        self.fields["collection_type"].required = True
