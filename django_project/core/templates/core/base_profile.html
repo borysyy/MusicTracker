@@ -21,6 +21,21 @@
         
     }
     
+    {% if not profile_user.private or current_user == profile_user.username %}
+
+    body {
+        background-color: rgb({{profile_user.profile_hue}});
+    }
+
+    #main-header {
+        color: rgb({{profile_user.profile_hue}});
+    }
+
+    ::selection {
+        color: black;
+    }
+    
+    {% endif %}
     
 </style>
 
@@ -31,7 +46,7 @@
 
 {% if not profile_user.private or current_user == profile_user.username %}
 
-<div class="container mt-2 ">
+<div class="container mt-2 profile-hue">
     <div class="row justify-content-start">
         <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
             <div class="profile-img-circle">

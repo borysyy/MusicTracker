@@ -5,5 +5,5 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "first_name", "private", "profile_picture")
+    list_display = ("username", "first_name", "private", "profile_picture", "profile_hue")
     
