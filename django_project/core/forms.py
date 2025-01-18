@@ -13,7 +13,6 @@ class CustomUserCreationForm(UserCreationForm):
         
         self.fields["username"].required = True
         self.fields["first_name"].required = True
-        self.fields["private"].required = True
         self.fields["password1"].required = True
         self.fields["password2"].required = True
         

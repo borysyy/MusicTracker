@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from .forms import CustomUserCreationForm, AuthenticationForm
-from .models import User
+from .models import User, Collection
 
 # Create your views here.
 def home_view(request):
@@ -48,10 +48,13 @@ def profile_view(request, username):
     
     profile_user = get_object_or_404(User, username=username)
     current_user = request.user.get_username()
-    
+
+    collections = Collection.objects.filter(owner__username=username)
+
     context = {
-        'profile_user': profile_user,
-        'current_user': current_user
+        "profile_user": profile_user,
+        "collections": collections,
+        "current_user": current_user,
     }
     
     return render(request, "core/base_profile.html", context)
