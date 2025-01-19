@@ -20,20 +20,35 @@
         object-fit: cover;
         
     }
+
+    .card-border {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin: 0.5em;
+    }
+
+    .card-border:hover {
+        transform: scale(1.05); /* Slightly enlarges the card */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adds a shadow for emphasis */
+        border-color: white;
+    }
     
+    .icon-300 { 
+        font-size: 300px; 
+    }
+
     {% if not profile_user.private or current_user == profile_user.username %}
 
-    body {
-        background-color: rgb({{profile_user.profile_hue}});
-    }
+        body {
+            background-color: rgb({{profile_user.profile_hue}});
+        }
 
-    #main-header {
-        color: rgb({{profile_user.profile_hue}});
-    }
+        #main-header {
+            color: rgb({{profile_user.profile_hue}});
+        }
 
-    ::selection {
-        color: black;
-    }
+        ::selection {
+            color: black;
+        }
     
     {% endif %}
     
@@ -60,29 +75,38 @@
         </div>
     </div>
     <hr>
+
     <div class="text-center">
         <div class="fs-1"> 
             Collections
+            {% if not collections %}
+              <div class="fs-2">
+                  You currently have no collections.
+                  Add one!
+              </div>
+            {% endif %}
         </div>
-        <div class="row">
-            {% if collections %}
-                {% for collection in collections %}
-            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                <div class="card" style="width: 18rem;"> 
-                    <div class="card-body">
-                        <h4 class="card-title">{{ collection.name }}</h4>
-                    </div>  
+    </div>
+   
 
+    <div class="row card-row">
+        <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
+            <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 18rem;">
+                <i class="bi bi-plus icon-300"></i>
+            </div>
+        </div>
+
+        {% if collections %}
+            {% for collection in collections %}
+                <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
+                    <div class="card card-border" style="width: 18rem; height: 18rem;"> 
+                        <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ collection.name }}</h4>
+                        </div>  
+                    </div>
                 </div>
-            </div>
             {% endfor %}
-
-        </div>
-            {% else %}
-            <div>
-                You currently have no collections.
-                Add one!
-            </div>
         {% endif %}
     </div>
 </div>
@@ -92,10 +116,10 @@
     <div class="container" >
         <div class="row">
             <div class="col text-center">
-                <h1>
+                <div class="fs-1">
                     This User's Profile is Private
                     <i class="bi bi-incognito"></i>
-                </h1>
+                </div>
             </div>
         </div>
     </div>

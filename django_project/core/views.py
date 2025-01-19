@@ -49,7 +49,7 @@ def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     current_user = request.user.get_username()
 
-    collections = Collection.objects.filter(owner__username=username)
+    collections = Collection.objects.filter(owner__username=username).order_by("name")
 
     context = {
         "profile_user": profile_user,
