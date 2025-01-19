@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+
+{% block title %} {{ collection.name }} {% endblock %}
+
+{% block style %}
+
+<style>
+
+    
+
+
+</style>
+
+{% endblock %}
+
+{% block main %}
+
+{% if not collection_user.private or current_user == collection_user.username %}
+
+<div class="container mt-2">
+    <div class="row justify-content-start">
+        <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
+            <div>
+                <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" style="border-radius: 15px;">
+            </div>
+            <div style="white-space: nowrap;">
+                <h1>{{ collection.name }}</h1>
+                <h2>Date Created: {{ collection.date_created }}</h2>
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-9 col-lg-8">
+            <div class="fs-1">
+                {{ collection.description }}
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+
+
+{% else %}
+
+    <div class="container" >
+        <div class="row">
+            <div class="col text-center">
+                <div class="fs-1">
+                    This User's Profile is Private
+                    <i class="bi bi-incognito"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}

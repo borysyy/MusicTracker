@@ -58,3 +58,17 @@ def profile_view(request, username):
     }
     
     return render(request, "core/base_profile.html", context)
+
+def collection_view(request, username, code):
+    
+    collection_user = get_object_or_404(User, username=username)
+    collection = get_object_or_404(Collection, code=code)
+    current_user = request.user.get_username()
+    
+    
+    context = {
+        "collection_user": collection_user,
+        "collection": collection,
+        "current_user": current_user
+    }
+    return render(request, "core/collection.html", context)
