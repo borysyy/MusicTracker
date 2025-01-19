@@ -24,16 +24,21 @@
     .card-border {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         margin: 0.5em;
+        border-radius: 15px;
     }
 
     .card-border:hover {
-        transform: scale(1.05); /* Slightly enlarges the card */
+        transform: translateY(-5px); /* Slightly enlarges the card */
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adds a shadow for emphasis */
         border-color: white;
     }
     
     .icon-300 { 
         font-size: 300px; 
+    }
+
+    #card-rows img {
+        border-radius: 15px 15px 0px 0px;
     }
 
     {% if not profile_user.private or current_user == profile_user.username %}
@@ -61,11 +66,11 @@
 
 {% if not profile_user.private or current_user == profile_user.username %}
 
-<div class="container mt-2 profile-hue">
+<div class="container mt-2">
     <div class="row justify-content-start">
         <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
             <div class="profile-img-circle">
-                <img src="{{ profile_user.profile_picture.url }}" alt="">
+                <img src="{{ profile_user.profile_picture.url }}" alt="Profile picture">
             </div>
             <div style="white-space: nowrap;">
                 <h1>{{ profile_user.username }}</h1>
@@ -89,9 +94,9 @@
     </div>
    
 
-    <div class="row card-row">
+    <div class="row" id="card-rows">
         <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
-            <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 18rem;">
+            <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 22rem;">
                 <i class="bi bi-plus icon-300"></i>
             </div>
         </div>
@@ -99,11 +104,13 @@
         {% if collections %}
             {% for collection in collections %}
                 <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
-                    <div class="card card-border" style="width: 18rem; height: 18rem;"> 
-                        <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail">
-                        <div class="card-body">
-                            <h4 class="card-title">{{ collection.name }}</h4>
-                        </div>  
+                    <div class="card card-border" style="width: 18rem; height: 22rem;"> 
+                        <a href="{% url 'core:collection' profile_user collection.code %}" style="text-decoration: none; color: white;">
+                            <img src="{{ collection.thumbnail.url }}" class="card-img-top" alt="Collection Thumbnail" width="300px" height="300px">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ collection.name }}</h4>
+                            </div>  
+                        </a>
                     </div>
                 </div>
             {% endfor %}

@@ -6,6 +6,7 @@ from django.apps import apps
 from django.conf import settings
 from colorthief import ColorThief
 
+# Get the dominate color of the profile picture
 def get_image_hue(instance):
     try:
         # Ensure the image exists and the path is correct
@@ -24,6 +25,7 @@ def get_image_hue(instance):
         return "000,000,000" 
 
 
+# Generate a 5 digit code for each collection
 def generate_unique_code():
     Collections = apps.get_model("core", "Collection")
     while True:
@@ -31,6 +33,7 @@ def generate_unique_code():
         if not Collections.objects.filter(code=code).exists():
             return code
 
+# Resize and rename images
 def rename_resize_images(instance, **kwargs):
 
     try:

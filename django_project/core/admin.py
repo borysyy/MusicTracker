@@ -11,7 +11,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ("code", "name", "description", "date_created", "collection_type", "owner__username")
+    list_display = ("code", "name", "description", "date_created", "collection_type", "owner__username", "thumbnail")
     fieldsets = [
         ("Name/Type", {"fields": ["name", "collection_type"]}),
         ("Description", {"fields": ["description"]}),
