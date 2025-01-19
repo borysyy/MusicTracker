@@ -25,7 +25,7 @@ def get_image_hue(instance):
 
 
 def generate_unique_code():
-    Collections = apps.get_model("core", "Collections")
+    Collections = apps.get_model("core", "Collection")
     while True:
         code = uuid.uuid4().hex[:5].upper()
         if not Collections.objects.filter(code=code).exists():

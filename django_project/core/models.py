@@ -114,7 +114,7 @@ class Collection(models.Model):
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = generate_unique_code()
-
+                    
         super().save(*args, **kwargs)
 
         if self.thumbnail and self.thumbnail.name != "collection_thumbnails/default.jpg":
