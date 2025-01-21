@@ -15,7 +15,7 @@
 
 {% block main %}
 
-{% if not collection.owner.private or current_user == collection.owner.username %}
+{% if not collection.owner.private or current_user == collection.owner %}
 
 <div class="container mt-2">
     <div class="row justify-content-start">
@@ -40,7 +40,9 @@
                 </div>
             {% else %}
                 <div class="fs-1">
-                   No description for this collection
+                    <i>
+                        No description for this collection
+                    </i>
                 </div>
             {% endif %}
         </div>

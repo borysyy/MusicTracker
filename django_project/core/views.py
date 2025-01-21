@@ -67,7 +67,7 @@ def profile_view(request, username):
 def collection_view(request, username, code):
     
     collection = get_object_or_404(Collection, code=code)
-    current_user = request.user.get_username()
+    current_user = request.user
     
     context = {
         "collection": collection,
