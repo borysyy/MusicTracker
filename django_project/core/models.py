@@ -123,7 +123,7 @@ class Collection(models.Model):
                                  passedin_dir="collection_thumbnails", 
                                  custom_path=lambda x: [x.owner.username, x.code],
                                  img_name=f"{self.code.lower()}_collection",
-                                 max_size=(300,300), 
+                                 max_size=(500,500), 
                                  )
           
             super().save(update_fields=["thumbnail"])

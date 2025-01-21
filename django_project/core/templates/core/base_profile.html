@@ -85,21 +85,32 @@
         <div class="fs-1"> 
             Collections
             {% if not collections %}
-              <div class="fs-2">
-                  You currently have no collections.
-                  Add one!
-              </div>
+                {% if current_user == profile_user.username %}
+                    <div class="fs-2">
+                        You currently have no collections.
+                        Add one!
+                    </div>
+                {% else %}
+                    <div class="fs-2">
+                        {{ profile_user }} currently has no collections.
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>
    
 
     <div class="row" id="card-rows">
+
+        {% if current_user == profile_user.username %}
         <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
-            <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 22rem;">
-                <i class="bi bi-plus plus-icon"></i>
-            </div>
+            <button style="background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#addCollection">
+                <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 22rem;">
+                    <i class="bi bi-plus plus-icon"></i>
+                </div>
+            </button>
         </div>
+        {% endif %}
 
         {% if collections %}
             {% for collection in collections %}
@@ -133,5 +144,8 @@
 
 {% endif %}
 
+{% if form %}
+    {% include "core/includes/add_collection.html" %}
+{% endif %}
 
 {% endblock %}

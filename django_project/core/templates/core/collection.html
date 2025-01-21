@@ -15,28 +15,38 @@
 
 {% block main %}
 
-{% if not collection_user.private or current_user == collection_user.username %}
+{% if not collection.owner.private or current_user == collection.owner.username %}
 
 <div class="container mt-2">
     <div class="row justify-content-start">
-        <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
+        <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
             <div>
                 <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" style="border-radius: 15px;">
             </div>
             <div style="white-space: nowrap;">
                 <h1>{{ collection.name }}</h1>
+                <h2>Collection by: 
+                    <a href="{% url 'core:profile' collection.owner.username %}" style="color: white">
+                        {{ collection.owner.username }}
+                    </a>
+                </h2>
                 <h2>Date Created: {{ collection.date_created }}</h2>
             </div>
         </div>
-        <div class="col-sm-8 col-md-9 col-lg-8">
-            <div class="fs-1">
-                {{ collection.description }}
-            </div>
+        <div class="col-sm-8 col-md-9 col-lg-4">
+            {% if collection.description %}
+                <div class="fs-1">
+                    {{ collection.description }}
+                </div>
+            {% else %}
+                <div class="fs-1">
+                   No description for this collection
+                </div>
+            {% endif %}
         </div>
     </div>
     <hr>
 </div>
-
 
 {% else %}
 
