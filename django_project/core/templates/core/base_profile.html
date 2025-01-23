@@ -32,10 +32,16 @@
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adds a shadow for emphasis */
         border-color: white;
     }
+
+    .card-size {
+        width: 18rem;
+        height: 25rem;
+    }
     
     .plus-icon { 
         font-size: 300px; 
     }
+
 
     #card-rows img {
         border-radius: 15px 15px 0px 0px;
@@ -103,9 +109,9 @@
     <div class="row" id="card-rows">
 
         {% if current_user == profile_user.username %}
-        <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
             <button style="background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#addCollection">
-                <div class="card card-border d-flex justify-content-center align-items-center" style="width: 18rem; height: 22rem;">
+                <div class="card card-border d-flex justify-content-center align-items-center card-size">
                     <i class="bi bi-plus plus-icon"></i>
                 </div>
             </button>
@@ -114,8 +120,8 @@
 
         {% if collections %}
             {% for collection in collections %}
-                <div class="col-12 col-md-6 col-lg-3 d-flex justify-content-center">
-                    <div class="card card-border" style="width: 18rem; height: 22rem;"> 
+                <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card card-border card-size"> 
                         <a href="{% url 'core:collection' profile_user collection.code %}" style="text-decoration: none; color: white;">
                             <img src="{{ collection.thumbnail.url }}" class="card-img-top" alt="Collection Thumbnail" width="300px" height="300px">
                             <div class="card-body">
