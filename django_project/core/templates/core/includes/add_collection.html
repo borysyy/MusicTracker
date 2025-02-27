@@ -1,32 +1,32 @@
 <form action="{% url 'core:update_collection' current_user %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-    <div class="modal fade" id="addCollection" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="addCollection" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">Add a New Collection</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add a New Collection</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                     <div class="modal-body">
 
                         <div>
-                            <label for="{{ collection_form.name.id_for_label }}">Collection Name:</label>
-                            {{ collection_form.name }}
+                            <label for="{{ form.name.id_for_label }}">Collection Name:</label>
+                            {{ form.name }}
                         </div>
 
                         <div>
-                            <label for="{{ collection_form.description.id_for_label }}">Collection Description:</label>
-                            {{ collection_form.description }}
+                            <label for="{{ form.description.id_for_label }}">Collection Description:</label>
+                            {{ form.description }}
                         </div>
 
                         <div>
-                            <label for="{{ collection_form.collection_type.id_for_label }}">Collection Type:</label>
-                            {{ collection_form.collection_type }}
+                            <label for="{{ form.collection_type.id_for_label }}">Collection Type:</label>
+                            {{ form.collection_type }}
                         </div>
 
                         <div>
-                            <label for="{{ collection_form.thumbnail.id_for_label }}">Collection Thumbnail:</label>
-                            {{ collection_form.thumbnail }}
+                            <label for="{{ form.thumbnail.id_for_label }}">Collection Thumbnail:</label>
+                            {{ form.thumbnail }}
                         </div>
 
                     </div>

@@ -11,6 +11,7 @@
         height: 300px;
         overflow: hidden;
         border-radius: 50%;
+
     }
 
     .profile-img-circle img {
@@ -19,8 +20,6 @@
         object-fit: cover;
         
     }
-
-    
 
     .card-border {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -48,14 +47,14 @@
         border-radius: 15px 15px 0px 0px;
     }
 
-    {% if not profile_user.private or current_user.username == profile_user.username %}
+    {% if not profile_user.private or current_user == profile_user.username %}
 
         body {
-            background-color: {{profile_user.profile_hue}};
+            background-color: rgb({{profile_user.profile_hue}});
         }
 
         #title-header {
-            color: {{profile_user.profile_hue}};
+            color: rgb({{profile_user.profile_hue}});
         }
 
         ::selection {
@@ -71,7 +70,7 @@
 
 {% block main %}
 
-{% if not profile_user.private or current_user.username == profile_user.username %}
+{% if not profile_user.private or current_user == profile_user.username %}
 
 <div class="container mt-2">
     <div class="row justify-content-start">
@@ -84,23 +83,15 @@
                 <h2>{{ profile_user.first_name }}</h2>
                 <h4>Date Joined: {{ profile_user.date_joined|date:"F j Y" }}</h4>
             </div>
-            {% if current_user.username == profile_user.username %}
-                <div class="d-flex justify-content-end">
-                    <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateProfile">
-                        Edit Profile <i class="bi bi-pencil"></i>
-                    </button>
-                </div>
-            {% endif %}
         </div>
     </div>
-
     <hr>
 
     <div class="text-center">
         <div class="fs-1"> 
             Collections
             {% if not collections %}
-                {% if current_user.username == profile_user.username %}
+                {% if current_user == profile_user.username %}
                     <div class="fs-2">
                         You currently have no collections.
                         Add one!
@@ -117,7 +108,7 @@
 
     <div class="row" id="card-rows">
 
-        {% if current_user.username == profile_user.username %}
+        {% if current_user == profile_user.username %}
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
             <button style="background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#addCollection">
                 <div class="card card-border d-flex justify-content-center align-items-center card-size">
@@ -159,9 +150,8 @@
 
 {% endif %}
 
-{% if collection_form and update_form %}
+{% if form %}
     {% include "core/includes/add_collection.html" %}
-    {% include "core/includes/update_profile.html" %}
 {% endif %}
 
 {% endblock %}
