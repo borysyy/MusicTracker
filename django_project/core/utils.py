@@ -15,15 +15,17 @@ def get_image_hue(instance):
         # Create a ColorThief object from the image file
         color_thief = ColorThief(image_path)
         dominant_color = color_thief.get_color(quality=1)
-        dominant_color = ", ".join(map(str, dominant_color))
+        
+        dominant_color = rgb_to_hex(*dominant_color)
 
-        print(dominant_color)
         return dominant_color
 
     except Exception as e:
         print(f"Error processing hue for {instance.username}: {str(e)}")
-        return "000,000,000" 
+        return "#000000" 
 
+def rgb_to_hex(r, g, b):
+    return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
 # Generate a 5 digit code for each collection
 def generate_unique_code():

@@ -1,0 +1,55 @@
+<form action="{% url 'core:update_profile' current_user %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+      <div class="modal fade" id="updateProfile" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h1 class="modal-title fs-5">Update Profile</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                      <div class="modal-body">
+
+                        <div>
+                            Current profile picture:
+                            <div class="profile-img-circle" style="width: 150px; height: 150px;">
+                                <img src="{{ update_form.profile_picture.value.url }}" alt="Profile Picture">
+                            </div>
+                            <label for="{{ update_form.profile_picture.id_for_label }}">Edit Profile Picture:</label>
+                            {{ update_form.profile_picture }}
+                        </div>
+   
+                        <div>
+                            Current Visibility: 
+                          {% if current_user.private %}
+                              Private <i class="bi bi-lock"></i>
+                              <label for="{{ update_form.private.id_for_label }}">Change to public: </label>
+                          {% else %}
+                            Public <i class="bi bi-unlock"></i>
+                            <label for="{{ update_form.private.id_for_label }}">Change to private: </label>
+                          {% endif %}
+                          {{ update_form.private }}
+                        </div>
+
+                        <div>
+                            <label for="{{ update_form.username.id_for_label }}">Change username: </label>
+                            {{ update_form.username }}
+                        </div>
+
+                        <div>
+                            <label for="{{ update_form.first_name.id_for_label }}">Change first name: </label>
+                            {{ update_form.first_name }}
+                        </div>
+
+                        <div>
+                            <label for="{{ update_form.profile_hue.id_for_label }}">Change profile background color: </label>
+                            {{ update_form.profile_hue }}
+                        </div>
+  
+                      </div>
+                  <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Save Updates</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </form>
