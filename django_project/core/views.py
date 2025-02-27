@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
+from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm
 from .models import User, Collection
 
 # Create your views here.
@@ -32,7 +32,6 @@ def register_view(request):
     context = {}
     if request.method == "POST":
         register_form = CustomUserCreationForm(data=request.POST, files=request.FILES)
-        print(register_form)
         if register_form.is_valid():
             user = register_form.save()
             login(request, user)
@@ -48,28 +47,25 @@ def register_view(request):
 def profile_view(request, username):
     
     profile_user = get_object_or_404(User, username=username)
-    current_user = request.user
+    current_user = request.user.get_username()
     collections = Collection.objects.filter(owner__username=username).order_by("name")
     collection_form = None
-    update_form = None
-        
-    if current_user == profile_user:
+
+    if request.user == profile_user:
         collection_form = CollectionForm()
-        update_form = ProfileUpdateForm(instance=current_user)
-        
+
     context = {
         "profile_user": profile_user,
         "collections": collections,
         "current_user": current_user,
-        "collection_form": collection_form,
-        "update_form": update_form
+        "form": collection_form
     }
     
     
     return render(request, "core/base_profile.html", context)
 
 def collection_view(request, username, code):
-
+    
     collection = get_object_or_404(Collection, code=code)
     current_user = request.user
     
@@ -97,33 +93,3 @@ def update_collection_view(request, username):
         else:
             print("form.errors:\n", collection_form.errors)
         
-
-def update_profile_view(request, username):    
-    if request.method == "POST":
-        user = request.user
-        update_form = ProfileUpdateForm(data=request.POST, files=request.FILES)
-        if update_form.is_valid():
-            new_username = update_form.cleaned_data["username"]
-            new_first_name = update_form.cleaned_data["first_name"]
-            new_privacy = update_form.cleaned_data["private"]
-            new_profile_picture = update_form.cleaned_data["profile_picture"]
-            
-            if new_username != user.username:
-                if User.objects.filter(username=new_username).exists():
-                    messages.error(request, 'A user with that username already exists.')
-                    return redirect("core:profile", username=username)  # Fix redirect to pass correct username
-            
-            user.username = new_username
-            user.first_name = new_first_name
-            user.private = new_privacy
-            if new_profile_picture:
-                user.profile_picture = new_profile_picture
-            user.save()
-            
-            
-            string = "Your profile has been updated"
-            messages.success(request, string)
-            return redirect("core:profile", username=user.username)
-        else:
-            print("form.errors:\n", update_form.errors)
- 

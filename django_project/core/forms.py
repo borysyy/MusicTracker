@@ -4,25 +4,6 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Collection
 
 class CustomUserCreationForm(UserCreationForm):
-    password1 = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(attrs={
-            "id": "password1",
-            "class": "form-control",
-            "autocomplete": "new-password",
-            "placeholder": "Password"
-        }),
-    )
-    password2 = forms.CharField(
-        label="Password Confirmation",
-        widget=forms.PasswordInput(attrs={
-            "id": "password2",
-            "class": "form-control",
-            "autocomplete": "new-password",
-            "placeholder": "Password Confirmation"
-        }),
-    )
-
     class Meta:
         model = User
         fields = [
@@ -57,10 +38,66 @@ class CustomUserCreationForm(UserCreationForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         self.fields["username"].required = True
         self.fields["first_name"].required = True
         self.fields["password1"].required = True
         self.fields["password2"].required = True
+        
+        self.fields["username"].widget.attrs.update(
+            {
+                "id": "username",
+                "class": "form-control",
+                "autofocus": True,
+                "placeholder": "Username"
+            }
+        )
+        
+        self.fields["first_name"].widget.attrs.update(
+            {
+                "id": "first_name",
+                "class": "form-control",
+                "autofocus": False,
+                "placeholder": "First Name"
+            }
+        )
+        
+        self.fields["private"].widget = forms.CheckboxInput()
+        self.fields["private"].widget.attrs.update(
+            {
+                "id": "private",
+                "class": "form-check-input",
+                "required": False
+            }
+        )
+          
+        self.fields["password1"].widget.attrs.update(
+            {
+                "id": "password1",
+                "class": "form-control",
+                "autocomplete": "new-password",
+                "autofocus": False,
+                "placeholder": "Password"
+            }
+        )
+        
+        self.fields["password2"].widget.attrs.update(
+            {
+                "id": "password2",
+                "class": "form-control",
+                "autocomplete": "new-password",
+                "autofocus": False,
+                "placeholder": "Password Confirmation"
+            }
+        )
+        
+        self.fields["profile_picture"].widget.attrs.update(
+            {
+                "id": "profile_picture",
+                "class": "form-control-file",
+                "accept": "image/*",
+            }
+        )
         
 class AuthenticationForm(forms.Form):
     username = forms.CharField(
@@ -145,42 +182,3 @@ class CollectionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["name"].required = True
         self.fields["collection_type"].required = True
-
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'profile_picture', 'private', 'profile_hue'] 
-        widgets = {
-            "username": forms.TextInput(attrs={
-                "id": "username",
-                "class": "form-control",
-                "placeholder": "Username"
-            }),
-            "first_name": forms.TextInput(attrs={
-                "id": "first_name",
-                "class": "form-control",
-                "placeholder": "First Name"
-            }),
-            "private": forms.CheckboxInput(attrs={
-                "id": "private",
-                "class": "form-check-input",
-            }),
-            "profile_picture": forms.FileInput(attrs={
-                "id": "profile_picture",
-                "class": "form-control-file",
-                "accept": "image/*",
-            }),
-            "profile_hue": forms.TextInput(attrs={
-                "id": "profile_hue",
-                "class": "form-control",
-                "type": "color"
-            })
-        }
-
-    # Optional: You can add custom validation for the username field to check if it's already taken
-    def clean(self):
-        username = self.cleaned_data.get("username")
-        if User.objects.filter(username=username).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError("A user with that username already exists.")
-        return username
-
