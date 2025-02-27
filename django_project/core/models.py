@@ -26,7 +26,8 @@ class User(AbstractUser):
     )
 
     # Profile Hue
-    profile_hue = ColorField(default="000,000,000")
+    profile_hue = models.CharField(max_length=7, default="#000000")
+
     
     # Save profile picture to user directory
     def save(self, *args, **kwargs):
