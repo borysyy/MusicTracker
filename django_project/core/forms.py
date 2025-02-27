@@ -32,7 +32,6 @@ class CustomUserCreationForm(UserCreationForm):
             "password2",
             "private",
             "profile_picture",
-            "profile_hue",
         ]
         widgets = {
             "username": forms.TextInput(attrs={
