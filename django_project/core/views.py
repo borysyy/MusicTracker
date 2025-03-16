@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
-from .models import User, Collection
-from .utils import get_image_hue
 from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
+from .models import User, Collection
+from .utils import get_image_hue
 from .serializers import UserSerializer
 
 # Create your views here.
@@ -109,47 +110,15 @@ def update_collection_view(request, username):
 
 class UserUpdate(APIView):
     def put(self, request, username):
-        print(request.data)
         
         user = get_object_or_404(User, username=username)
         serializer = UserSerializer(user, data=request.data, partial=True)
             
         if serializer.is_valid():
-
             serializer.save()
-            return Response(serializer.data)
+            username = serializer.data['username']
+            
+            redirect_url = reverse("core:profile", kwargs={"username":username})
+            return Response({"redirect_url":redirect_url})
         else:
-            return redirect("core:profile", username=username)
-
-            
-
-def update_profile_view(request, username):    
-    if request.method == "POST":
-        user = request.user
-        update_form = ProfileUpdateForm(data=request.POST, files=request.FILES)
-        if update_form.is_valid():
-            new_username = update_form.cleaned_data["username"]
-            new_first_name = update_form.cleaned_data["first_name"]
-            new_privacy = update_form.cleaned_data["private"]
-            new_profile_picture = update_form.cleaned_data["profile_picture"]
-            
-            if new_username != user.username:
-                if User.objects.filter(username=new_username).exists():
-                    messages.error(request, 'A user with that username already exists.')
-                    return redirect("core:profile", username=username)  # Fix redirect to pass correct username
-            
-            user.username = new_username
-            user.first_name = new_first_name
-            user.private = new_privacy
-            if new_profile_picture:
-                user.profile_picture = new_profile_picture
-            user.save()
-            
-            
-            string = "Your profile has been updated"
-            messages.success(request, string)
-            return redirect("core:profile", username=user.username)
-        else:
-            print("form.errors:\n", update_form.errors)
-            return JsonResponse("Empty", safe=False)
- 
+            return Response(serializer.errors, status=400)

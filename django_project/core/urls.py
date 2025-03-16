@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home_view, register_view, login_view, logout_view, profile_view, collection_view, update_collection_view, update_profile_view, UserUpdate
+from .views import home_view, register_view, login_view, logout_view, profile_view, collection_view, update_collection_view, UserUpdate
 
 app_name = "core"
 

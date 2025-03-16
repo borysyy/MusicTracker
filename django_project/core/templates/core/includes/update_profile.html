@@ -9,10 +9,10 @@
                   </div>
                       <div class="modal-body">
 
-                        <div>
-                            Current profile picture:
-                            <div class="profile-img-circle" style="width: 150px; height: 150px;">
-                                <img src="{{ update_form.profile_picture.value.url }}" alt="Profile Picture">
+                        <div class="text-start">
+                            Profile picture:
+                            <div class="profile-img-circle" style="width: 150px; height: 150px">
+                                <img id="preview" src="{{ update_form.profile_picture.value.url }}" alt="Profile Picture">
                             </div>
                             <label for="{{ update_form.profile_picture.id_for_label }}">Edit Profile Picture:</label>
                             {{ update_form.profile_picture }}
@@ -45,8 +45,11 @@
                             <label for="{{ update_form.profile_hue.id_for_label }}">Change profile background color: </label>
                             {{ update_form.profile_hue }}
                         </div>
-  
-                      </div>
+
+                        <button id="reverseColor" type="button" style="background-color: transparent; border: none; display: none;">
+                            Revert Color <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                        
                   <div class="modal-footer">
                       <button id="updateUserButton" type="button" class="btn btn-primary">Save Updates</button>
                   </div>
@@ -57,8 +60,56 @@
 
   <script> 
 
-      
-      $("#updateUserButton").click(function() {
+    // Original profile hue
+    const original_profile_hue = $("#profile_hue").val()
+
+    // Convert RGB value to Hex
+    function rgbToHex(r, g, b) {
+        const red = r.toString(16).padStart(2, '0')
+        const green = g.toString(16).padStart(2, '0')
+        const blue = b.toString(16).padStart(2, '0')
+        return '#' + red + green + blue
+      }
+
+    // Preview profile picture and profile hue before updating
+    $("#profile_picture").change(function(event) {
+        let file = event.target.files[0]
+
+        if (file) {
+            let reader = new FileReader()
+
+            reader.onload = function(e) {
+                $("#preview").attr("src", e.target.result).show()
+            }
+            reader.readAsDataURL(file)
+
+            const colorThief = new ColorThief()
+            const img = $("#preview")[0]
+
+            $(img).on("load", function() {
+                let color = colorThief.getColor(img)
+
+                // Convert RGB to HEX and set the value
+                $("#profile_hue").val(rgbToHex(color[0], color[1], color[2]))
+            })
+
+            $("#reverseColor").show()
+
+        }
+    })
+
+    // Show the reverse color button when profile hue input has changed
+    $("#profile_hue").change(function() {
+        $("#reverseColor").show()
+    })
+
+    // Set the profile hue input to the original profile hue
+    $("#reverseColor").click(function() {
+        $("#profile_hue").val(original_profile_hue)
+    })
+
+    // Update your profile      
+    $("#updateUserButton").click(function() {
 
         let formData = new FormData($("#updateUserForm")[0])
 
@@ -72,8 +123,14 @@
             },
             data: formData,
             success: function(response) {
-                console.log("Profile updated successfully:", response);
+                if (response.redirect_url) {
+                    window.location.href = response.redirect_url  
+                }
+                console.log("Profile updated successfully:", response)
             },
+            error: function(xhr) {
+                console.error("Update failed:", xhr.responseText) 
+            }
 
         })
     })
