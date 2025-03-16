@@ -176,10 +176,3 @@ class ProfileUpdateForm(forms.ModelForm):
                 "type": "color"
             })
         }
-
-    # Optional: You can add custom validation for the username field to check if it's already taken
-    def clean(self):
-        username = self.cleaned_data.get("username")
-        if User.objects.filter(username=username).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError("A user with that username already exists.")
-        return username

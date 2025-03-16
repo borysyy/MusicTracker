@@ -1,4 +1,4 @@
-<form action="{% url 'core:update_profile' current_user %}" method="post" enctype="multipart/form-data">
+<form id="updateUserForm" action="{% url 'core:update_profile' current_user %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
       <div class="modal fade" id="updateProfile" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog">
@@ -23,6 +23,7 @@
                           {% if current_user.private %}
                               Private <i class="bi bi-lock"></i>
                               <label for="{{ update_form.private.id_for_label }}">Change to public: </label>
+                              {{form}}
                           {% else %}
                             Public <i class="bi bi-unlock"></i>
                             <label for="{{ update_form.private.id_for_label }}">Change to private: </label>
@@ -47,9 +48,35 @@
   
                       </div>
                   <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary">Save Updates</button>
+                      <button id="updateUserButton" type="button" class="btn btn-primary">Save Updates</button>
                   </div>
               </div>
           </div>
       </div>
   </form>
+
+  <script> 
+
+      
+      $("#updateUserButton").click(function() {
+
+        let formData = new FormData($("#updateUserForm")[0])
+
+        $.ajax({
+            url: "{% url 'core:update_profile' current_user %}", 
+            type: 'PUT',
+            processData: false, 
+            contentType: false,  
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  
+            },
+            data: formData,
+            success: function(response) {
+                console.log("Profile updated successfully:", response);
+            },
+
+        })
+    })
+
+
+</script>

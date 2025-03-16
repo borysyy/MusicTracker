@@ -44,7 +44,6 @@ class User(AbstractUser):
                         
             super().save(update_fields=["profile_picture"])
 
-            self.profile_hue = get_image_hue(self)
             super().save(update_fields=["profile_hue"])
 
 

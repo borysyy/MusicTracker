@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'colorfield'
+    'colorfield',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

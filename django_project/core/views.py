@@ -3,6 +3,12 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
 from .models import User, Collection
+from .utils import get_image_hue
+from django.http import JsonResponse, HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserSerializer
 
 # Create your views here.
 def home_view(request):
@@ -35,6 +41,9 @@ def register_view(request):
         print(register_form)
         if register_form.is_valid():
             user = register_form.save()
+            user.profile_hue = get_image_hue(user)
+            user.save()
+
             login(request, user)
             string = f"Your account {user.username} has been created"
             messages.success(request, string)
@@ -98,6 +107,22 @@ def update_collection_view(request, username):
             print("form.errors:\n", collection_form.errors)
         
 
+class UserUpdate(APIView):
+    def put(self, request, username):
+        print(request.data)
+        
+        user = get_object_or_404(User, username=username)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+            
+        if serializer.is_valid():
+
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return redirect("core:profile", username=username)
+
+            
+
 def update_profile_view(request, username):    
     if request.method == "POST":
         user = request.user
@@ -126,4 +151,5 @@ def update_profile_view(request, username):
             return redirect("core:profile", username=user.username)
         else:
             print("form.errors:\n", update_form.errors)
+            return JsonResponse("Empty", safe=False)
  
