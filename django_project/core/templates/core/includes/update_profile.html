@@ -23,12 +23,12 @@
                           {% if current_user.private %}
                               Private <i class="bi bi-lock"></i>
                               <label for="{{ update_form.private.id_for_label }}">Change to public: </label>
-                              {{form}}
                           {% else %}
                             Public <i class="bi bi-unlock"></i>
                             <label for="{{ update_form.private.id_for_label }}">Change to private: </label>
                           {% endif %}
-                          {{ update_form.private }}
+                          <input type="hidden" name="{{ update_form.private.name }}" value="false">
+                          <input type="checkbox" name="{{ update_form.private.name }}" id="{{ update_form.private.id_for_label }}" {% if update_form.private.value %}{% endif %} value="true">
                         </div>
 
                         <div>
