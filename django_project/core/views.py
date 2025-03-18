@@ -39,7 +39,6 @@ def register_view(request):
     context = {}
     if request.method == "POST":
         register_form = CustomUserCreationForm(data=request.POST, files=request.FILES)
-        print(register_form)
         if register_form.is_valid():
             user = register_form.save()
             user.profile_hue = get_image_hue(user)

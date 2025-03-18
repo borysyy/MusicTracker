@@ -5,3 +5,5 @@ cryptography
 pillow
 django-colorfield
 colorthief
+djangorestframework
+pipreqs
