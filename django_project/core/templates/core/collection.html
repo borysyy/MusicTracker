@@ -6,8 +6,26 @@
 
 <style>
 
-    
+    img {
+        border-radius: 15px;
+    }
 
+    .update-collection-img img{
+        width: 300px;
+        height: 300px;
+    }
+
+    {% if not collection.owner.private or current_user.username == collection.owner.username %}
+
+        body {
+            background-color: {{collection.owner.profile_hue}};
+        }
+
+        #title-header {
+            color: {{collection.owner.profile_hue}};
+        }
+
+    {% endif %}
 
 </style>
 
@@ -21,8 +39,9 @@
     <div class="row justify-content-start">
         <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
             <div>
-                <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" style="border-radius: 15px;">
+                <img src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" >
             </div>
+
             <div style="white-space: nowrap;">
                 <h1>{{ collection.name }}</h1>
                 <h2>Collection by: 
@@ -30,8 +49,18 @@
                         {{ collection.owner.username }}
                     </a>
                 </h2>
-                <h2>Date Created: {{ collection.date_created }}</h2>
+                <h2 id="collection-type">Type: {{ collection.collection_type }}</h2>
+                <h3>Date Created: {{ collection.date_created }}</h3>
             </div>
+
+            {% if current_user.username == collection.owner.username %}
+                <div class="d-flex justify-content-end">
+                    <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
+                        Edit Collection <i class="bi bi-pencil"></i>
+                    </button>
+                </div>
+            {% endif %}
+
         </div>
         <div class="col-sm-8 col-md-9 col-lg-4">
             {% if collection.description %}
@@ -65,4 +94,10 @@
 
 {% endif %}
 
+{% if update_form %}
+    {% include "core/includes/update_collection.html" %}
+{% endif %}
+
+
 {% endblock %}
+

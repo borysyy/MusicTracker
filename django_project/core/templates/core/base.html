@@ -27,6 +27,7 @@
     
     <style>
 
+
       ::selection {
         color: black;
       }
@@ -50,6 +51,13 @@
         object-fit: cover; /* Ensure the image covers the button area */
       }
 
+      {% if request.user %}
+        #title-header {
+          color: {{request.user.profile_hue}};
+        }
+        
+      {% endif %}
+
 
     </style>
 
@@ -66,32 +74,35 @@
     <main class="d-flex flex-column flex-grow-1 flex-shrink-1" > 
         {% include "core/includes/header.html" %}
 
-        {% if messages%}
-          {% for success_message in messages %}
-            <div
-              class="alert alert-success alert-dismissible fade fixed-top show text-center"
-              role="alert"
-            >
-            <button class="btn w-100 text-center" data-bs-dismiss="alert">
-              {{ success_message }}
-            </button>
-            </div>
+        <div id="messages">
+          {% if messages%}
+            {% for success_message in messages %}
+              <div
+                class="alert alert-success alert-dismissible fade fixed-top show text-center"
+                role="alert"
+              >
+              <button class="btn w-100 text-center" data-bs-dismiss="alert">
+                {{ success_message }}
+              </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+  
+          {% for errors in form.errors.values %}
+            {% for error in errors %}
+              <div
+                class="alert alert-danger alert-dismissible fade fixed-top show text-center"
+                role="alert"
+              >
+              <button class="btn w-100 text-center" data-bs-dismiss="alert">
+                {{ error }}
+              </button>
+              </div>
+            {% endfor %}
           {% endfor %}
-        {% endif %}
+      
+        </div>
 
-        {% for errors in form.errors.values %}
-          {% for error in errors %}
-            <div
-              class="alert alert-danger alert-dismissible fade fixed-top show text-center"
-              role="alert"
-            >
-            <button class="btn w-100 text-center" data-bs-dismiss="alert">
-              {{ error }}
-            </button>
-            </div>
-          {% endfor %}
-        {% endfor %}
-    
         <div class="flex-grow-1 flex-shrink-1">
           {% block main %}{% endblock %}
         </div>
