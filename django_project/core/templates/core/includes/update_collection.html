@@ -7,9 +7,8 @@
                       <h1 class="modal-title fs-5">Update Collection</h1>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-                      <div class="modal-body">
+                        <div class="modal-body">
 
-                            
                             <div class="text-start">
                                 Thumbnail:
                                 <div class="update-collection-img">
@@ -22,22 +21,21 @@
                                 {{ update_form.thumbnail }}
                             </div>
                 
-                        <div>
-                            <label for="{{ update_form.name.id_for_label }}">Collection Name:</label>
-                            {{ update_form.name }}
-                        </div>
-   
-                        <div>
-                            <label for="{{ update_form.description.id_for_label }}">Description: </label>
-                            {{ update_form.description }}
-                        </div>
+                            <div>
+                                <label for="{{ update_form.name.id_for_label }}">Collection Name:</label>
+                                {{ update_form.name }}
+                            </div>
+    
+                            <div>
+                                <label for="{{ update_form.description.id_for_label }}">Description: </label>
+                                {{ update_form.description }}
+                            </div>
 
-                        <div>
-                            <label for="{{ update_form.collection_type.id_for_label }}">Type: </label>
-                            {{ update_form.collection_type }}
+                            <div>
+                                <label for="{{ update_form.collection_type.id_for_label }}">Type: </label>
+                                {{ update_form.collection_type }}
+                            </div>
                         </div>
-
-                       
 
                   <div class="modal-footer">
                       <button id="updateCollectionButton" type="button" class="btn btn-primary">Save Updates</button>

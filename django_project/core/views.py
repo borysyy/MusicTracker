@@ -87,7 +87,9 @@ def collection_view(request, username, code):
     update_form = None
     
     if current_user.username == collection.owner.username:
-        update_form = CollectionForm()
+        update_form = CollectionForm(instance=collection)
+        
+    
     
     context = {
         "collection": collection,
