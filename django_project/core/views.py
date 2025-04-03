@@ -10,6 +10,7 @@ from rest_framework import status
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
 from .models import User, Collection
 from .utils import get_image_hue
+from .spotify import get_results
 from .serializers import UserSerializer, CollectionSerializer
 
 # View for rendering the home page
@@ -90,7 +91,6 @@ def collection_view(request, username, code):
         update_form = CollectionForm(instance=collection)
         
     
-    
     context = {
         "collection": collection,
         "current_user": current_user,
@@ -115,6 +115,22 @@ def add_collection_view(request, username):
             return redirect("core:collection", username, code)
         else:
             print("form.errors:\n", collection_form.errors)
+            
+def search_view(request):
+    if request.method == "POST":
+        user_input = request.POST.get("input", "")
+        
+        top_results, album_results, artist_results = get_results(user_input)
+        
+        context = {
+            "topResult": top_results, 
+            "albumResults": album_results, 
+            "artistResults": artist_results
+            }
+
+        return JsonResponse(context)
+    else:
+        return render(request, "core/search.html")
         
 # API view for updating user information
 class UserUpdate(APIView):

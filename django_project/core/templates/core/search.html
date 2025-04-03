@@ -1,0 +1,219 @@
+{% extends "core/base.html" %} 
+{% load static %}
+
+{% block title %} Search {% endblock %}
+
+{% block style %} 
+<style>
+    .card-title {
+        white-space: nowrap;        /* Prevents text from wrapping to the next line */
+        overflow: hidden;           /* Hides any overflowing text */
+        text-overflow: ellipsis;    /* Adds '...' at the end if the text overflows */
+        max-width: 700px;           /* Set a max width to trigger truncation */
+    }
+    
+</style>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(() => {
+        toggleVisibility(".hidden-items", false); 
+        $("#clear-btn").click(clearScreen);
+        let debounceTimer;
+
+        // Handle search input
+        $("#music-search").on("input", () => {
+            clearTimeout(debounceTimer);
+            // If user has stopped typing after half a second, send input to server
+            debounceTimer = setTimeout(() => {
+                searchMusic();
+            }, 500);
+        });
+
+        // Function to search for music
+        function searchMusic() {
+            let url = "{% url 'core:search' %}";
+            let user_input = $("#music-search").val().trim();
+
+            // If the user input is blank, clear the screen
+            if (!user_input) {
+                clearScreen();
+                return;
+            }
+
+            // Ajax request to do the search on the server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    input: user_input,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                dataType: "json",
+                success: (response) => {
+                    printCards(response);
+                },
+                error: (error) => {
+                    console.error(`Error fetching music: ${error}`);
+                }
+            });
+        }
+
+        // Print out the cards to user
+        function printCards(response) {
+            topResult = response.topResult
+            albumResults = response.albumResults
+            artistResults = response.artistResults
+
+            $(".music").empty()
+            toggleVisibility(".hidden-items", true);
+
+            // Display the top results depending on if it is an album or artist
+            if (topResult.type === "artist") {
+                const { name, id, image_url, uri } = topResult
+                const topCardHtml = `
+                    <form action= method="POST" class="card-form">
+                        {% csrf_token %}
+                        <div class="card card-border" style="width: 18rem;">
+                            <input type="hidden" name="artist_uri" value="${uri}">
+                            <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
+                            <div class="card-body">
+                                <h2 class="card-title">${name}</h2>
+                                    <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
+                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                `
+                $('#top-result').append(topCardHtml)
+            } else if (topResult.type === "album") {
+                const { title, id, artist, release_year, cover_url } = topResult
+                const topCardHtml = `
+                    <div class="card card-border" style="width: 18rem;">
+                        <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image" width="300" height="300">
+                        <div class="card-body">
+                            <h2 class="card-title">${title}</h2>
+                            <h3 class="card-title">${artist}</h3>
+                            <h4 class="card-title">${release_year}</h4>
+                                <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
+                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
+                                </a>
+                        </div>
+                    </div>
+                `;
+                $('#top-result').append(topCardHtml)
+
+            } 
+
+
+            // Display the artist results
+            Object.entries(artistResults).forEach(([key, artist]) => {
+                const { name, id, image_url } = artist
+                const cardHtml = `
+                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
+                        <div class="card card-border" style="width: 18rem;">
+                            <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
+                            <div class="card-body">
+                                <h2 class="card-title">${name}</h2>
+
+                                <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
+                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
+                                </a>                                
+                            </div>
+                        </div>
+                    </div>
+                `
+                $('#artists-row').append(cardHtml)
+            });
+
+            // Display the album results
+            Object.entries(albumResults).forEach(([key, album]) => {
+                const { title, id , artist, release_year, cover_url } = album
+                const cardHtml = `
+                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
+                        <div class="card card-border" style="width: 18rem;">
+                            <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image" width="300" height="300">
+                            <div class="card-body">
+                                <h2 class="card-title">${title}</h2>
+                                <h3 class="card-title">${artist}</h3>
+                                <h4 class="card-title">${release_year}</h4>
+
+                                <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
+                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
+                                </a>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                `
+                $('#albums-row').append(cardHtml)
+            });
+
+        }
+
+        // Function to clear the screen
+        function clearScreen() {
+            toggleVisibility(".hidden-items", false);
+            $("#music-search").val('');
+            $(".music").empty()
+
+        }
+
+        // Utility function to toggle visibility
+        function toggleVisibility(selector, show) {
+            if (show) {
+                $(selector).removeClass("d-none");
+            } else {
+                $(selector).addClass("d-none");
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% block main %} 
+<div class="d-flex justify-content-center">
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <input id="music-search" type="text">
+        </div>
+    </form>
+</div>
+
+<div class="d-flex flex-column align-items-center">
+    <h1 class="display-5 text-center hidden-items">Spotify Results</h1>
+    <div class="hidden-items" id="clear-btn">
+        <button>Clear</button>
+    </div>
+
+    <div class="container" id="music-container">
+        <h1 class="hidden-items">Top Result:</h1>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-left mb-4">
+                <div class="music" id="top-result">
+
+                </div>
+            </div> 
+        </div>
+
+        <div >
+            <h1 class="hidden-items">Artists:</h1>
+            <div class="row music" id="artists-row">
+              
+            </div> 
+        </div>
+
+        <div>
+            <h1 class="hidden-items">Albums:</h1>
+            <div class="row music" id="albums-row">
+                
+            </div> 
+        </div>
+    </div>
+</div>
+
+{% endblock %}

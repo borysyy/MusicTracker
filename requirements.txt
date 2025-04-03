@@ -41,11 +41,19 @@ pymysql==1.1.1
     # via -r requirements.in
 python-decouple==3.8
     # via -r requirements.in
+redis==5.2.1
+    # via spotipy
 requests==2.32.3
-    # via yarg
+    # via
+    #   spotipy
+    #   yarg
+spotipy==2.25.1
+    # via -r requirements.in
 sqlparse==0.5.3
     # via django
 urllib3==2.3.0
-    # via requests
+    # via
+    #   requests
+    #   spotipy
 yarg==0.1.10
     # via pipreqs

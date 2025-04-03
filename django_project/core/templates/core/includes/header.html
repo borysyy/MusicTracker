@@ -1,79 +1,67 @@
+{% load static %}
 
-  <header class="bg-body-secondary fixed-top" style="height: 3.75rem">
-    <div class="h-100 container-fluid">
-      <div class="align-items-center d-flex h-100">
-        <div class="d-flex justify-content-start w-100" style="white-space: nowrap;">
-          <a class="text-decoration-none" href="{% url 'core:home' %}">
-            <div class="fs-1" id="title-header">
-                Shelf Sounds
-            </div>
-          </a>
-        </div>
-        <div class="d-flex justify-content-end w-100">
-          <div class="align-items-center d-flex"> 
 
-            <div class="dropdown">
-              <button class="btn profile-btn" data-bs-toggle="dropdown">
-
-                {% if user.is_authenticated %}
-                  <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile picture" class="profile-pic">
-
-                {% else %}
-                <img src="{{ MEDIA_URL }}/profile_pictures/default_profile.jpg" alt="Default profile picture" class="profile-pic">
-
-                {% endif %}
-              </button>
-              <ul class="dropdown-menu">
-                {% if user.is_authenticated %}
-                  <li>
-                    <a
-                      class="align-items-center d-flex dropdown-item"
-                      href="{% url 'core:profile' user.username %}"
-                    >
-                      <i class="bi bi-person me-3" style="font-size: 1.5rem"></i>
-                      <div>
-                        <div>{{ user.username }}</div>
-                        <div>{{ user.first_name }} </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <a
-                      class="align-items-center d-flex dropdown-item"
-                      href="{% url 'core:home' %}"
-                    >
-                      <i class="bi bi-gear me-3" style="font-size: 1.5rem"></i>
-                      Settings
-                    </a>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <a
-                      class="align-items-center d-flex dropdown-item"
-                      href="{% url 'core:logout' %}"
-                    >
-                      <i class="bi bi-box-arrow-right me-3" style="font-size: 1.5rem"></i>
-                      Log Out
-                    </a>
-                  </li>
-                {% else %}
-                  <li>
-                    <a class="dropdown-item" href={% url 'core:register' %} class="nav-link">
-                      Create Account
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href={% url 'core:login' %} class="nav-link">
-                      Login
-                    </a>
-                  </li>
-                {% endif %}
-              </ul>
-            </div>
+<header class="bg-body-secondary fixed-top" style="height: 3.75rem">
+  <div class="h-100 container-fluid">
+    <div class="align-items-center d-flex h-100 justify-content-between">
+      <!-- Left Section: Title and Search -->
+      <div class="d-flex align-items-center">
+        <a class="text-decoration-none" href="{% url 'core:home' %}">
+          <div class="fs-1" id="title-header">
+            Shelf Sounds
           </div>
+        </a>
+        <a href="{% url 'core:search' %}" class="ms-3 text-decoration-none">
+          Search for Music
+        </a>
+      </div>
+
+      <!-- Right Section: Profile Dropdown -->
+      <div class="d-flex align-items-center">
+        <div class="dropdown">
+          <button class="btn profile-btn" data-bs-toggle="dropdown">
+            {% if user.is_authenticated %}
+              <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile picture" class="profile-pic">
+            {% else %}
+              <img src="{% static 'default/default-profile.jpg' %}" alt="Default profile picture" class="profile-pic">
+            {% endif %}
+          </button>
+          <ul class="dropdown-menu">
+            {% if user.is_authenticated %}
+              <li>
+                <a class="align-items-center d-flex dropdown-item" href="{% url 'core:profile' user.username %}">
+                  <i class="bi bi-person me-3" style="font-size: 1.5rem"></i>
+                  <div>
+                    <div>{{ user.username }}</div>
+                    <div>{{ user.first_name }} </div>
+                  </div>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="align-items-center d-flex dropdown-item" href="{% url 'core:home' %}">
+                  <i class="bi bi-gear me-3" style="font-size: 1.5rem"></i>
+                  Settings
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="align-items-center d-flex dropdown-item" href="{% url 'core:logout' %}">
+                  <i class="bi bi-box-arrow-right me-3" style="font-size: 1.5rem"></i>
+                  Log Out
+                </a>
+              </li>
+            {% else %}
+              <li>
+                <a class="dropdown-item" href={% url 'core:register' %}>Create Account</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href={% url 'core:login' %}>Login</a>
+              </li>
+            {% endif %}
+          </ul>
         </div>
       </div>
     </div>
-  </header>
-  
+  </div>
+</header>

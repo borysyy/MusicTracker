@@ -46,6 +46,7 @@ django_project/*
 !django_project/core
 !django_project/mysite
 !django_project/manage.py
+!django_project/static
 
 ########################################
 #                                      #
