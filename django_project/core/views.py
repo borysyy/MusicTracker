@@ -7,9 +7,10 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
-from .models import User, Collection
-from .utils import get_image_hue
+from .models import User, Collection, Artist, Album
+from .utils import get_image_hue, save_artist, save_album, save_in_collection
 from .spotify import get_results
 from .serializers import UserSerializer, CollectionSerializer
 
@@ -89,8 +90,21 @@ def collection_view(request, username, code):
     
     if current_user.username == collection.owner.username:
         update_form = CollectionForm(instance=collection)
-        
     
+    artists = collection.artists.all().order_by('name')
+    for artist in artists:
+        artist.uri_last_part = artist.uri.split(':')[-1]
+        
+    collection.artists_list = artists
+
+    albums = collection.albums.all().order_by('title')
+    for album in albums:
+        album.uri_last_part = album.uri.split(':')[-1]
+        
+    collection.albums_list = albums
+    
+    
+
     context = {
         "collection": collection,
         "current_user": current_user,
@@ -115,7 +129,8 @@ def add_collection_view(request, username):
             return redirect("core:collection", username, code)
         else:
             print("form.errors:\n", collection_form.errors)
-            
+
+
 def search_view(request):
     if request.method == "POST":
         user_input = request.POST.get("input", "")
@@ -130,7 +145,12 @@ def search_view(request):
 
         return JsonResponse(context)
     else:
-        return render(request, "core/search.html")
+        collections = Collection.objects.filter(owner__username = request.user.username)
+        
+        context = {
+            "user_collections": collections
+        }
+        return render(request, "core/search.html", context)
         
 # API view for updating user information
 class UserUpdate(APIView):
@@ -165,3 +185,59 @@ class CollectionUpdate(APIView):
                 return Response({"redirect_url": redirect_url})
             else:
                 return Response(serializer.errors, status=400)
+
+class SaveToCollection(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        print(request.data)
+        
+        user = request.user
+        music_type = request.data["type"]
+        selected_collections = request.data["selected_collections"]
+        uri = request.data["uri"]
+        
+        if not selected_collections:
+            return Response({"error": "No Collection Selected"}, status=400)
+
+        if music_type == "artist":
+            name = request.data["name"]
+            image = request.data["image"]
+            artist_data = {
+                "user": user,
+                "uri": uri,
+                "name": name,
+                "image": image
+            }
+           
+            artist_obj = save_artist(artist_data)
+            
+            collections = save_in_collection(type="artists", obj=artist_obj, selected_collections=selected_collections)
+            
+            return Response({"success": f"{music_type.capitalize()}, {name} saved to {', '.join(collections)}"}, status=200)
+        elif music_type == "album":
+            title = request.data["title"]
+            release_year = request.data["release_year"]
+            cover_art = request.data["cover_art"]
+            artist = request.data["artist_name"]
+            
+            album_data = {
+                "user": user,
+                "uri": uri,
+                "tile": title,
+                "release_year": release_year,
+                "cover_art": cover_art,
+                "artist": artist
+            }
+            
+            album_obj = save_album(album_data)
+            
+            collections = save_in_collection(type="albums", obj=album_obj, selected_collections=selected_collections)
+            
+            return Response({"success": f"{music_type.capitalize()}, {title} saved to {', '.join(collections)}"}, status=200)
+        
+        
+        
+        return Response({"error": "Invalid request"}, status=400)
+            
+    
