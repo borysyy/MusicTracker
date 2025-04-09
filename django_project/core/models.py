@@ -68,11 +68,15 @@ class Artist(models.Model):
     - image: URL of the artist's image (optional).
     - genre: ForeignKey linking to a Genre.
     """
-    uri = models.CharField(max_length=255, unique=True, null=True, blank=True)  # External reference
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Owner of this artist
+    uri = models.CharField(max_length=255, null=True, blank=True)  # External reference
     name = models.CharField(max_length=255, db_index=True)  # Indexed for faster queries
     image = models.URLField(null=True, blank=True)  # Optional image URL
     
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)  # Artist's genre
+
+    class Meta:
+        unique_together = ['user', 'uri']
 
     def __str__(self):
         return self.name  # String representation
@@ -85,14 +89,15 @@ class Album(models.Model):
     - title: Album title.
     - release_year: Year of release (must be non-negative).
     - cover_art: URL to album cover image (optional).
-    - artist: ForeignKey linking to Artist.
     - genre: ForeignKey linking to Genre.
     """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    uri = models.CharField(max_length=255, null=True, blank=True)  # External reference
     title = models.CharField(max_length=255)  # Album title
     release_year = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])  # Non-negative release year
     cover_art = models.URLField(null=True, blank=True)  # Optional album cover image URL
     
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)  # Each album belongs to an artist
+    artist = models.CharField(max_length=255)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)  # Genre can be null
 
     class Meta:
@@ -101,7 +106,7 @@ class Album(models.Model):
             Index(fields=["artist", "release_year"])  # Indexing artist and release year for optimized queries
         ]
 
-        unique_together = ("title", "artist")  # Prevent duplicate albums by the same artist
+        unique_together = ['user', 'uri']
         verbose_name = "Album"
         verbose_name_plural = "Albums"
     
