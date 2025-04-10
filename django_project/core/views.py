@@ -12,7 +12,7 @@ from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, P
 from .models import User, Collection, Artist, Album
 from .utils import get_image_hue, save_artist, save_album, save_in_collection
 from .spotify import get_results
-from .serializers import UserSerializer, CollectionSerializer
+from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
 
 # View for rendering the home page
 def home_view(request):
@@ -186,58 +186,17 @@ class CollectionUpdate(APIView):
             else:
                 return Response(serializer.errors, status=400)
 
+            
 class SaveToCollection(APIView):
     permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        print(request.data)
-        
-        user = request.user
-        music_type = request.data["type"]
-        selected_collections = request.data["selected_collections"]
-        uri = request.data["uri"]
-        
-        if not selected_collections:
-            return Response({"error": "No Collection Selected"}, status=400)
 
-        if music_type == "artist":
-            name = request.data["name"]
-            image = request.data["image"]
-            artist_data = {
-                "user": user,
-                "uri": uri,
-                "name": name,
-                "image": image
-            }
-           
-            artist_obj = save_artist(artist_data)
-            
-            collections = save_in_collection(type="artists", obj=artist_obj, selected_collections=selected_collections)
-            
-            return Response({"success": f"{music_type.capitalize()}, {name} saved to {', '.join(collections)}"}, status=200)
-        elif music_type == "album":
-            title = request.data["title"]
-            release_year = request.data["release_year"]
-            cover_art = request.data["cover_art"]
-            artist = request.data["artist_name"]
-            
-            album_data = {
-                "user": user,
-                "uri": uri,
-                "tile": title,
-                "release_year": release_year,
-                "cover_art": cover_art,
-                "artist": artist
-            }
-            
-            album_obj = save_album(album_data)
-            
-            collections = save_in_collection(type="albums", obj=album_obj, selected_collections=selected_collections)
-            
-            return Response({"success": f"{music_type.capitalize()}, {title} saved to {', '.join(collections)}"}, status=200)
-        
-        
-        
-        return Response({"error": "Invalid request"}, status=400)
-            
-    
+    def post(self, request):
+        serializer = CollectionSaveSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            result = serializer.save()
+            obj = result["object"]
+            names = result["saved_to"]
+            return Response({
+                "success": f"{request.data['type'].capitalize()}, {getattr(obj, 'name', getattr(obj, 'title', ''))} saved to {', '.join(names)}"
+            }, status=200)
+        return Response(serializer.errors, status=400)
