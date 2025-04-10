@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Collection
+from .models import User, Collection, Artist, Album
 
 # Serializer for the User model
 class UserSerializer(serializers.ModelSerializer):

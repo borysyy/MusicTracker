@@ -2,7 +2,6 @@ import spotipy
 from django.templatetags.static import static
 from spotipy.oauth2 import SpotifyClientCredentials
 from decouple import config
-from collections import OrderedDict
 from pprint import pprint
 
 client_id = config("SPOTIPY_CLIENT_ID")
@@ -25,41 +24,43 @@ def get_results(input):
     
     top_result = get_top_result(input)
     artist_results = get_artists(input)
+        
+    if top_result is not None and top_result["type"] is not None:
 
-        
-    if top_result["type"] == "artist":
-        uri = top_result["uri"]
-        albums = get_artist_albums(uri, limit=5)
-        album_results.update(albums)
-        additional_albums = get_albums(input)
-        album_results = append_dicts(album_results, additional_albums)
-        
-        # Remove duplicate artists
-        artist_results = {
-            key: artist
-            for key, artist in artist_results.items()
-            if artist.get("name") != top_result["name"]
-        }
-        
-    elif top_result["type"] == "album":
-        uri = top_result["artist_uri"]
-        albums = get_artist_albums(uri, limit=3)
-        album_results.update(albums)
-        additional_albums = get_albums(input)
-        album_results = append_dicts(album_results, additional_albums)
-                
-        
-        # Remove duplicate albums
-        album_results = {
-            key: album
-            for key, album in album_results.items()
-            if album.get("title") != top_result["title"]
-        }
-        
-        album_artist = get_artist_by_uri(uri)
-        
-        artist_results = append_dicts(album_artist, artist_results)
+        if top_result["type"] == "artist":
+            uri = top_result["uri"]
+            albums = get_artist_albums(uri, limit=7)
+            album_results.update(albums)
+            additional_albums = get_albums(input)
+            album_results = append_dicts(album_results, additional_albums)
+            
+            # Remove duplicate artists
+            artist_results = {
+                key: artist
+                for key, artist in artist_results.items()
+                if artist.get("name") != top_result["name"]
+            }
+            
+        elif top_result["type"] == "album":
+            uri = top_result["artist_uri"]
+            albums = get_artist_albums(uri, limit=4)
+            album_results.update(albums)
+            additional_albums = get_albums(input)
+            album_results = append_dicts(album_results, additional_albums)
+                    
+            
+            # Remove duplicate albums
+            album_results = {
+                key: album
+                for key, album in album_results.items()
+                if album.get("title") != top_result["title"]
+            }
+            
+            album_artist = get_artist_by_uri(uri)
+            
+            artist_results = append_dicts(album_artist, artist_results)
 
+ 
 
     return top_result, album_results, artist_results
 
@@ -77,7 +78,7 @@ def get_top_result(input):
     album_lookup = {}
     artist_lookup = {}
 
-    album_results = spotify.search(q=f'album:{input}',type="album", limit=5)
+    album_results = spotify.search(q=f'album:{input}',type="album", limit=5)    
     artist_results = spotify.search(q=f'artist:{input}', type="artist", limit=5)
     
     album_items = album_results.get('albums', {}).get('items', [])
@@ -163,13 +164,17 @@ def get_artist_by_uri(uri):
     uri = results['uri']
     image = results['images'][1]['url'] if results['images'] else default_image
     
+    pprint(results)
+    
     
     artist_lookup[1] = {
+        'type': 'artist',
         'id': id,
         'name': name,
         'uri': uri,
         'image_url':image
     }
+    
     
     return artist_lookup
     
@@ -178,7 +183,9 @@ def get_artist_by_uri(uri):
 # Create a dictionary of albums
 def create_album_dict(album_lookup, album_items, popularity_check = False):
     for i, album_item in enumerate(album_items):
+        pprint(album_item["artists"])
         id = album_item['id']
+        uri = album_item['uri']
         title = album_item['name']
         popularity = get_album_popularity(album_item['id']) if popularity_check == True else None
         artist = album_item['artists'][0]['name']
@@ -189,6 +196,7 @@ def create_album_dict(album_lookup, album_items, popularity_check = False):
         album_lookup[str(i + 1)] = {
             "type": "album",
             "id": id,
+            "uri": uri,
             "popularity": popularity,
             "title": title,
             "artist": artist,

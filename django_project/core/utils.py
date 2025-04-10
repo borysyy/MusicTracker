@@ -4,6 +4,7 @@ import uuid
 from PIL import Image
 from django.apps import apps
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from colorthief import ColorThief
 
 # Get the dominant color of a profile picture
@@ -125,3 +126,52 @@ def rename_resize_images(instance, **kwargs):
 
     except Exception as e:
         print(f"Error processing image: {e}")
+
+
+# Save or get an artist
+def save_artist(artist):
+    from .models import Artist
+
+    user, uri, name, image = artist.values()
+    artist_obj, _ = Artist.objects.get_or_create(
+        user=user,
+        uri=uri,
+        defaults={"name": name, "image": image}
+    )
+    
+    return artist_obj
+
+# Save or get an album
+def save_album(album):
+    from .models import Album
+    
+    user, uri, title, release_year, cover_art, artist = album.values()
+    
+    print(album.values())
+    
+    album_obj, created = Album.objects.get_or_create(
+        user=user,
+        uri=uri,
+        defaults={"title": title, "release_year": release_year, "cover_art": cover_art, "artist": artist}
+    )
+    
+    return album_obj
+
+# Actually save the artist or album in the selected collections from the frontend
+def save_in_collection(type, obj, selected_collections):
+    from .models import Collection
+    
+    collection_names = []
+    
+    for collection_code in selected_collections:
+        collection = get_object_or_404(Collection, code=collection_code)
+        save_attribute = getattr(collection, type)
+        
+        save_attribute.add(obj)
+        name = getattr(collection, "name")
+        
+        collection_names.append(name)
+        
+    return collection_names
+        
+    
