@@ -97,7 +97,7 @@
             $.ajax({
                 url: "{% url 'core:save' %}",
                 type: "POST",
-                processData: true,
+                processData: false,
                 contentType: "application/json",
                 headers: {
                     "X-CSRFToken": "{{ csrf_token }}"
@@ -117,16 +117,33 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("Error:", error);
-
-                    let errorDiv = $("#error-messages")
-                    errorDiv.html("")
-                    errorDiv.show()
-
-                    let errorMessage = $("<p class='text-danger'></p>").text(xhr.responseJSON?.error || "An error occurred.")
-                    errorDiv.append(errorMessage)
-
-
+                
+                    let errorDiv = $("#error-messages");
+                    errorDiv.html("");
+                    errorDiv.show();
+                
+                    const responseErrors = xhr.responseJSON;
+                
+                    if (responseErrors) {
+                        for (const key in responseErrors) {
+                            const messages = responseErrors[key];
+                            if (Array.isArray(messages)) {
+                                messages.forEach(msg => {
+                                    let errorMessage = $("<p class='text-danger'></p>").text(msg);
+                                    errorDiv.append(errorMessage);
+                                });
+                            } else if (typeof messages === "string") {
+                                // Just in case it's a plain string
+                                let errorMessage = $("<p class='text-danger'></p>").text(messages);
+                                errorDiv.append(errorMessage);
+                            }
+                        }
+                    } else {
+                        let fallbackMessage = $("<p class='text-danger'></p>").text("An error occurred.");
+                        errorDiv.append(fallbackMessage);
+                    }
                 }
+                
             });
         });
     });
