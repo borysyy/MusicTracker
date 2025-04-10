@@ -60,100 +60,97 @@
             });
         }
 
-        // Print out the cards to user
+          // Print out the cards to user
         function printCards(response) {
             topResult = response.topResult
             albumResults = response.albumResults
             artistResults = response.artistResults
 
-            $(".music").empty()
-            toggleVisibility(".hidden-items", true);
+            console.log(artistResults)
 
-            // Display the top results depending on if it is an album or artist
-            if (topResult.type === "artist") {
-                const { name, id, image_url, uri } = topResult
-                const topCardHtml = `
-                    <form action= method="POST" class="card-form">
-                        {% csrf_token %}
-                        <div class="card card-border" style="width: 18rem;">
-                            <input type="hidden" name="artist_uri" value="${uri}">
-                            <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
-                            <div class="card-body">
-                                <h2 class="card-title">${name}</h2>
-                                    <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
-                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
-                                </a>
-                            </div>
+            $(".music").empty()
+            toggleVisibility(".hidden-items", true)
+
+            // Print the top result
+            renderCard(topResult, "#top-result")
+
+            // Print the artists
+            Object.entries(artistResults).forEach(([_, artist]) => {
+                const cardWrapper = `<div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4"></div>`;
+                const $wrapper = $(cardWrapper);
+                renderCard(artist, $wrapper);
+                $('#artists-row').append($wrapper);
+            });
+            
+            // Print the albums
+            Object.entries(albumResults).forEach(([_, album]) => {
+                const cardWrapper = `<div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4"></div>`;
+                const $wrapper = $(cardWrapper);
+                renderCard(album, $wrapper);
+                $('#albums-row').append($wrapper);
+            });
+            
+
+        }
+
+        // Render the cards
+        function renderCard(data, targetSelector) {
+            let html = '';
+            if (data.type === "artist") {
+                const { type, name, id, image_url, uri } = data;
+        
+                html = `
+                    <div class="card card-border" style="width: 18rem;">
+                        <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
+                        <div class="card-body">
+                            <h2 class="card-title">${name}</h2>
+                            <button class="btn btn-success addToCollection" data-bs-toggle="modal" data-bs-target="#saveMusic" 
+                                data-type="${type}" 
+                                data-name="${name}" 
+                                data-image="${image_url}" 
+                                data-uri="${uri}"
+                            > 
+                                <h3>Add to a collection</h3>
+                            </button>
+                            <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
+                                <h4>Spotify <i class="bi bi-spotify"></i></h4>
+                            </a>
                         </div>
-                    </form>
-                `
-                $('#top-result').append(topCardHtml)
-            } else if (topResult.type === "album") {
-                const { title, id, artist, release_year, cover_url } = topResult
-                const topCardHtml = `
+                    </div>
+                `;
+            } else if (data.type === "album") {
+                const { type, title, uri, id, artist, release_year, cover_url } = data;
+        
+                html = `
                     <div class="card card-border" style="width: 18rem;">
                         <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image" width="300" height="300">
                         <div class="card-body">
                             <h2 class="card-title">${title}</h2>
                             <h3 class="card-title">${artist}</h3>
                             <h4 class="card-title">${release_year}</h4>
-                                <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
-                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
-                                </a>
+                            <button class="btn btn-success addToCollection" data-bs-toggle="modal" data-bs-target="#saveMusic" 
+                                data-type="${type}"
+                                data-title="${title}" 
+                                data-year="${release_year}"
+                                data-artist="${artist}" 
+                                data-art="${cover_url}"
+                                data-uri="${uri}"
+                            > 
+                                <h4>Add to a collection</h4>
+                            </button>
+                            <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
+                                <h5>Spotify <i class="bi bi-spotify"></i> </h5>
+                            </a>
                         </div>
                     </div>
                 `;
-                $('#top-result').append(topCardHtml)
-
-            } 
-
-
-            // Display the artist results
-            Object.entries(artistResults).forEach(([key, artist]) => {
-                const { name, id, image_url } = artist
-                const cardHtml = `
-                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
-                        <div class="card card-border" style="width: 18rem;">
-                            <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
-                            <div class="card-body">
-                                <h2 class="card-title">${name}</h2>
-
-                                <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
-                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
-                                </a>                                
-                            </div>
-                        </div>
-                    </div>
-                `
-                $('#artists-row').append(cardHtml)
-            });
-
-            // Display the album results
-            Object.entries(albumResults).forEach(([key, album]) => {
-                const { title, id , artist, release_year, cover_url } = album
-                const cardHtml = `
-                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
-                        <div class="card card-border" style="width: 18rem;">
-                            <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image" width="300" height="300">
-                            <div class="card-body">
-                                <h2 class="card-title">${title}</h2>
-                                <h3 class="card-title">${artist}</h3>
-                                <h4 class="card-title">${release_year}</h4>
-
-                                <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
-                                    <h5>Spotify <i class="bi bi-spotify"></i> </h5>
-                                </a>
-
-                                
-                            </div>
-                        </div>
-                    </div>
-                `
-                $('#albums-row').append(cardHtml)
-            });
-
+            }
+        
+            $(targetSelector).append(html);
         }
+        
 
+     
         // Function to clear the screen
         function clearScreen() {
             toggleVisibility(".hidden-items", false);
@@ -170,11 +167,46 @@
                 $(selector).addClass("d-none");
             }
         }
+
+        $(document).on("click", ".addToCollection", function() {
+            const type = $(this).data("type")
+
+            if (type === "artist") {
+                const name = $(this).data("name")
+                const image = $(this).data("image")
+                const uri = $(this).data("uri")
+                $("#artist-image").val(image)
+                $("#artist-uri").val(uri)
+                $("#artist-name").val(name)
+
+            } else if (type === "album") {
+                const title = $(this).data("title")
+                const year = $(this).data("year")
+                const artist = $(this).data("artist")
+                const art = $(this).data("art")
+                const uri = $(this).data("uri")
+
+                $("#album-title").val(title)
+                $("#album-year").val(year)
+                $("#album-art").val(art)
+                $("#album-uri").val(uri)
+                $("#artist-name").val(artist)
+
+            }
+        
+            $("#type").val(type);
+
+            $("#saveMusic input[type=checkbox]").prop("checked", false)
+            $("#success-messages").empty().hide()
+            $("#error-messages").empty().hide()
+        });
+        
     });
 </script>
 {% endblock %}
 
 {% block main %} 
+
 <div class="d-flex justify-content-center">
     <form method="post">
         {% csrf_token %}
@@ -215,5 +247,7 @@
         </div>
     </div>
 </div>
+
+{% include "core/includes/save_to_collection.html" %}
 
 {% endblock %}

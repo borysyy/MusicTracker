@@ -1,0 +1,137 @@
+<form id="saveToCollectionForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+      <div class="modal fade" id="saveMusic" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h1 class="modal-title fs-5">Save to Collection</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                      <div class="modal-body">
+                        <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+                        <div id="success-messages" class="alert alert-success" style="display: none;"></div>
+
+                        <input type="hidden" value="" id="type">
+                        <input type="hidden" value="" id="artist-name">
+                        <input type="hidden" value="" id="artist-image">
+                        <input type="hidden" value="" id="artist-uri">
+
+                        <input type="hidden" value="" id="album-title">
+                        <input type="hidden" value="" id="album-year">
+                        <input type="hidden" value="" id="album-art">
+                        <input type="hidden" value="" id="album-uri">
+
+
+
+                        <div class="table-responsive"> 
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Collection Name</th>
+                                        <th scope="col" class="text-center">Add</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    {% for collection in user_collections %}
+                                        <tr>
+                                            <td>{{ collection.name }}</td>
+                                            <td class="text-center">
+                                                <input class="form-check-input" type="checkbox" name="selected_collections" value="{{ collection.code }}">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+
+                        
+                    </div>
+                  <div class="modal-footer">
+                      <button id="saveMusicButton" type="button" class="btn btn-success">Save</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+</form>
+
+<script> 
+
+    $(() => {
+        
+        
+        $("#saveMusicButton").click(function() {
+            $("#success-messages").empty().hide()
+            $("#error-messages").empty().hide()
+            
+            let musicType = $("#type").val()
+
+            let selectedCollections = []
+            $("input[name='selected_collections']:checked").each(function() {
+                selectedCollections.push($(this).val());
+            })
+
+            let payload = {
+                type: musicType,
+                selected_collections: selectedCollections,
+            }
+
+
+            if (musicType === "artist") {
+                payload.name = $("#artist-name").val()
+                payload.image = $("#artist-image").val()
+                payload.uri = $("#artist-uri").val()
+
+            } else if (musicType === "album") {
+                payload.title = $("#album-title").val();
+                payload.artist_name = $("#artist-name").val();
+                payload.release_year = $("#album-year").val()
+                payload.cover_art = $("#album-art").val()
+                payload.uri = $("#album-uri").val()
+
+            }
+
+            console.log("Payload being sent:", JSON.stringify(payload));
+
+
+            $.ajax({
+                url: "{% url 'core:save' %}",
+                type: "POST",
+                processData: true,
+                contentType: "application/json",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                data: JSON.stringify(payload),
+                success: function(response) {
+                    console.log("Success:", response);
+
+                    let successDiv = $("#success-messages")
+                    successDiv.html("")
+                    successDiv.show()
+
+                    let successMessage = $("<p class='text-success'></p>").text(response.success)
+                    successDiv.append(successMessage)
+
+                    
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+
+                    let errorDiv = $("#error-messages")
+                    errorDiv.html("")
+                    errorDiv.show()
+
+                    let errorMessage = $("<p class='text-danger'></p>").text(xhr.responseJSON?.error || "An error occurred.")
+                    errorDiv.append(errorMessage)
+
+
+                }
+            });
+        });
+    });
+    
+
+  
+
+</script>
