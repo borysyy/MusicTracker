@@ -241,3 +241,11 @@ class SaveToCollection(APIView):
         return Response({"error": "Invalid request"}, status=400)
             
     
+
+class DeleteFromCollection(APIView):
+    def delete(self, request, username, code, type, music):
+        collection = Collection.objects.get(code=code)
+        
+        if type == "albums":
+            collection
+

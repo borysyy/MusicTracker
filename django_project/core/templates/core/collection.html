@@ -120,6 +120,21 @@
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
                 <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}" width="300" height="300">
+                {% if current_user == collection.owner %}
+                <button
+                  class="delete btn p-0"
+                  onclick="event.preventDefault();"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-music"
+                  data-name="{{ album.title }}"
+                  data-code="{{ collection.code }}"
+                  data-collection="{{ collection.name }}"
+                  data-type="albums"
+                  data-user="{{ current_user }}"
+                >
+                  Delete <i class="bi bi-trash"></i>
+              </button>
+              {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ album.title }}</h2>
                     <h3 class="card-title">{{ album.artist }}</h3>
@@ -141,13 +156,74 @@
     </div>
 
 
-
-
-
 </div>
+
+{% block script %}
+
+<script>
+
+
+    $(() => {
+        $('#delete-music').on('show.bs.modal', event => {
+            $('.modal-body').data('type', $(event.relatedTarget).data('type'))
+            $('.modal-body').data('music', $(event.relatedTarget).data('name'))
+
+
+            $('.modal-body .name').text('Delete ' + $(event.relatedTarget).data('name'))
+            $('.modal-body .collection').text('From ' + $(event.relatedTarget).data('collection'))
+          })
+
+          $('#delete-music .btn-danger').on('click', async () => {
+            const type = $('.modal-body').data('type')
+            const music = $('.modal-body').data('music')
+
+
+            const url = "{% url 'core:delete_music' current_user collection.code 'type' 'music' %}"
+                    .replace('type', type)
+                    .replace('music', music)
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                processData: false, 
+                contentType: false,  
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'  
+                },        
+                success: function(response) {
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url  
+                    }
+                    console.log("Collection updated successfully:", response)
+    
+    
+                },
+                error: function(xhr) {
+                    console.error("Update failed:", xhr.responseText) 
+                }
+            })
+            
+
+
+          })
+
+        })
+
+
+
+
+  
+
+
+
+
+</script>
+
+{% endblock %}
 
 {% if update_form %}
     {% include "core/includes/update_collection.html" %}
+    {% include "core/includes/delete_music.html" %}
 {% endif %}
 
 
