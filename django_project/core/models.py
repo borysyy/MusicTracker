@@ -111,7 +111,7 @@ class Album(models.Model):
         verbose_name_plural = "Albums"
     
     def __str__(self):
-        return f"{self.title} by {self.artist.name}"  # String representation
+        return f"{self.title} by {self.artist}"  # String representation
 
 
 # Collection model to group albums and artists

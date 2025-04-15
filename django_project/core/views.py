@@ -200,3 +200,21 @@ class SaveToCollection(APIView):
                 "success": f"{request.data['type'].capitalize()}, {getattr(obj, 'name', getattr(obj, 'title', ''))} saved to {', '.join(names)}"
             }, status=200)
         return Response(serializer.errors, status=400)
+
+
+class DeleteFromCollection(APIView):
+    def delete(self, request, username, code, type, music):
+        collection = Collection.objects.get(code=code)
+        
+        if type == "albums":
+            album = collection.albums.filter(title__iexact=music).first()
+            if album:
+                collection.albums.remove(album)
+        elif type == "artists":
+            artist = collection.artists.filter(name__iexact=music).first()
+            if artist:
+                collection.artists.remove(artist)
+                
+        redirect_url = reverse("core:collection", kwargs={"username": username, "code": code})
+        return Response({"redirect_url": redirect_url})
+            

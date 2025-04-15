@@ -102,6 +102,21 @@
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
                 <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}" width="300" height="300">
+                {% if current_user == collection.owner %}
+                <button
+                  class="delete btn p-0"
+                  onclick="event.preventDefault();"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-music"
+                  data-name="{{ artist.name }}"
+                  data-code="{{ collection.code }}"
+                  data-collection="{{ collection.name }}"
+                  data-type="artists"
+                  data-user="{{ current_user }}"
+                >
+                  Delete <i class="bi bi-trash"></i>
+              </button>
+              {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ artist.name }}</h2>
 
@@ -177,6 +192,8 @@
             const type = $('.modal-body').data('type')
             const music = $('.modal-body').data('music')
 
+            console.log(music)
+
 
             const url = "{% url 'core:delete_music' current_user collection.code 'type' 'music' %}"
                     .replace('type', type)
@@ -193,13 +210,12 @@
                 success: function(response) {
                     if (response.redirect_url) {
                         window.location.href = response.redirect_url  
+                        console.log("Deletion Successful:", response)
                     }
-                    console.log("Collection updated successfully:", response)
-    
     
                 },
                 error: function(xhr) {
-                    console.error("Update failed:", xhr.responseText) 
+                    console.error("Deletion Failed:", xhr.responseText) 
                 }
             })
             
@@ -208,13 +224,6 @@
           })
 
         })
-
-
-
-
-  
-
-
 
 
 </script>
