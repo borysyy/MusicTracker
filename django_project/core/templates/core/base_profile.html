@@ -78,6 +78,15 @@
                 <h2>{{ profile_user.first_name }}</h2>
                 <h4>Date Joined: {{ profile_user.date_joined|date:"F j Y" }}</h4>
             </div>
+
+            <div class="d-flex justify-content-end">
+                <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#friendsList">
+                    <h3>
+                        Friends List <i class="bi bi-person-lines-fill"></i>
+                    </h3>
+                </button>
+            </div>
+
             {% if current_user.username == profile_user.username %}
                 <div class="d-flex justify-content-end">
                     <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateProfile">
@@ -85,6 +94,7 @@
                     </button>
                 </div>
             {% endif %}
+
         </div>
     </div>
 
@@ -153,9 +163,12 @@
 
 {% endif %}
 
+{% include "core/includes/friends.html" %}
+
 {% if collection_form and update_form %}
     {% include "core/includes/add_collection.html" %}
     {% include "core/includes/update_profile.html" %}
 {% endif %}
+
 
 {% endblock %}
