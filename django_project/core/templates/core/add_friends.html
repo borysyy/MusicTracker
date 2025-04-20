@@ -1,0 +1,198 @@
+{% extends 'core/base.html' %}
+
+
+{% block title %} Add Friends {% endblock %}
+
+{% block style %}
+
+<style>
+
+    .profile-img-circle {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+
+    .profile-img-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        
+    }
+
+
+</style>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+    $(() => {
+
+        toggleVisibility(".hidden-items", false)
+        $("#clear-btn").click(clearScreen)
+        let debounceTimer
+
+        // Handle search input
+        $("#user-search").on("input", () => {
+            clearTimeout(debounceTimer);
+            // If user has stopped typing after half a second, send input to server
+            debounceTimer = setTimeout(() => {
+                searchUsers()
+            }, 500)
+        });
+        
+        function searchUsers() {
+            let url = "{% url 'core:add_friends' %}"
+            let user_input = $("#user-search").val().trim()
+
+            if (!user_input) {
+                clearScreen();
+                return;
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    input: user_input,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: (response) => {
+                    printCards(response)
+                },
+                error: (error) => {
+
+                }
+            })
+
+        }
+
+        function printCards(response) {
+            const users = response.users
+
+            $("#users-row").empty()
+
+            Object.entries(users).forEach(([_, user]) => {
+                const cardWrapper = `<div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4"></div>`;
+                const $wrapper = $(cardWrapper);
+                renderCard(user, $wrapper);
+                $("#users-row").append($wrapper);
+            });
+            
+            toggleVisibility(".hidden-items", true)
+        }
+
+        function renderCard(data, targetSelector) {
+            const { username, first_name, profile_picture, private  } = data
+            
+                const url = "{% url 'core:profile' 'username' %}".replace('username', username)
+                const action = "{% url 'core:requesting_friend' 'username' %}".replace('username', username)
+                html = `
+                    <div class="card card-border" style="width: 18rem;">
+                            <div class="profile-img-circle">
+                                <img src="${profile_picture}" alt="${username}-image">
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">${username}</h2>
+                                <h2 class="card-title">${first_name}</h2>
+                                <a class="text-decoration-none" href="${url}" style="color: inherit;"> 
+                                    <h3 class="card-title">View Profile</h3>
+                                </a>
+
+                                <form class="friend-request-form" method="post" action="${action}"> 
+                                    {% csrf_token %}
+                                    <h3 class="card-title">
+                                    <button type="submit"> 
+                                        Request to add
+                                    </button>
+                                    </h3>
+                                </form>
+                            </div>
+                    </div>
+                `
+
+                $(targetSelector).append(html)
+        }
+
+        $(document).on("submit", ".friend-request-form", function(event) {
+            event.preventDefault() // Prevent the default form submission
+    
+            const form = $(this)
+            $.ajax({
+                url: form.attr("action"), 
+                type: "POST", 
+                success: function(response) {
+                    // Handle the success response
+                    console.log('Request successful:', response);
+                    // Optionally, update the UI or notify the user
+                },
+                error: function(xhr, status, error) {
+                    // Handle the error response
+                    console.error('Error occurred:', error);
+                }
+            })
+        })
+
+        // Function to clear the screen
+        function clearScreen() {
+            toggleVisibility(".hidden-items", false);
+            $("#user-search").val('');
+            $("#users-row").empty()
+
+        }
+
+        // Utility function to toggle visibility
+        function toggleVisibility(selector, show) {
+            if (show) {
+                $(selector).removeClass("d-none");
+            } else {
+                $(selector).addClass("d-none");
+            }
+        }
+
+
+
+    })
+
+
+</script>
+
+{% endblock %}
+
+{% block main %} 
+
+<div class="d-flex justify-content-center">
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <input id="user-search" type="text">
+        </div>
+    </form>
+</div>
+
+<div class="d-flex flex-column align-items-center">
+    <h1 class="display-5 text-center hidden-items">User Results</h1>
+    <div class="hidden-items" id="clear-btn">
+        <button>Clear</button>
+    </div>
+
+    <div class="container" id="users-container">
+        
+        <div >
+            <div class="row" id="users-row">              
+            </div> 
+        </div>
+
+        
+    </div>
+</div>
+
+
+{% endblock %}
