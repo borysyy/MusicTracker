@@ -170,7 +170,7 @@ def search_friends_view(request):
         users = User.objects.filter(
             Q(username__icontains=user_input) | Q(first_name__icontains=user_input),
             private=False
-        ).all()[:20]
+        ).exclude(username=request.user.username).all()[:20]
         
         user_dict = {
             "users": [
