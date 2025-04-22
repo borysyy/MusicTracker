@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends "core/base.html" %}
 
 
 {% block title %} Add Friends {% endblock %}
@@ -33,7 +33,16 @@
 
 <script>
 
-    $(() => {
+    $(async () => {
+
+        const response = await fetch("{% url 'core:current_requests' %}")
+        const requests = await response.json()
+
+        const outgoing_requests = requests["outgoing_requests"]
+        const incoming_requests = requests["incoming_requests"]
+        const accepted_requests = requests["accepted_requests"]
+
+        console.log(requests)
 
         toggleVisibility(".hidden-items", false)
         $("#clear-btn").click(clearScreen)
@@ -49,7 +58,7 @@
         });
         
         function searchUsers() {
-            let url = "{% url 'core:add_friends' %}"
+            let url = "{% url "core:add_friends" %}"
             let user_input = $("#user-search").val().trim()
 
             if (!user_input) {
@@ -91,9 +100,42 @@
 
         function renderCard(data, targetSelector) {
             const { username, first_name, profile_picture, private  } = data
+
+
+                let headerText = ""
+                let modalTag = ""
+
+                if (
+                    outgoing_requests &&
+                    outgoing_requests.some(req => 
+                      req.to_user__username && req.to_user__username.toLowerCase() === username.toLowerCase()
+                    )
+                  ) {
+                    headerText = "Cancel Friend Request";
+                    modalTag = "#cancelFriendRequest";
+                  } else if (
+                    incoming_requests &&
+                    incoming_requests.some(req => 
+                      req.from_user__username && req.from_user__username.toLowerCase() === username.toLowerCase()
+                    )
+                  ) {
+                    headerText = "Accept Or Reject Friend Request";
+                    modalTag = "#acceptRejectRequest";
+                  } else if (
+                    accepted_requests &&
+                    accepted_requests.some(req => 
+                      req.friends__username && req.friends__username.toLowerCase() === username.toLowerCase()
+                    )
+                  ) {
+                    headerText = "Remove Friend";
+                    modalTag = "#removeFriend";
+                  } else {
+                    headerText = "Send Friend Request";
+                    modalTag = "#friendRequest";
+                  }
+                  
             
-                const url = "{% url 'core:profile' 'username' %}".replace('username', username)
-                const action = "{% url 'core:requesting_friend' 'username' %}".replace('username', username)
+                const url = "{% url 'core:profile' 'username' %}".replace("username", username)
                 html = `
                     <div class="card card-border" style="width: 18rem;">
                             <div class="profile-img-circle">
@@ -106,14 +148,15 @@
                                     <h3 class="card-title">View Profile</h3>
                                 </a>
 
-                                <form class="friend-request-form" method="post" action="${action}"> 
-                                    {% csrf_token %}
-                                    <h3 class="card-title">
-                                    <button type="submit"> 
-                                        Request to add
-                                    </button>
-                                    </h3>
-                                </form>
+                                <h3 class="card-title">
+                                <button class="btn btn-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target=${modalTag}
+                                    data-username=${username}
+                                > 
+                                    ${headerText}
+                                </button>
+                                </h3>
                             </div>
                     </div>
                 `
@@ -121,29 +164,15 @@
                 $(targetSelector).append(html)
         }
 
-        $(document).on("submit", ".friend-request-form", function(event) {
-            event.preventDefault() // Prevent the default form submission
-    
-            const form = $(this)
-            $.ajax({
-                url: form.attr("action"), 
-                type: "POST", 
-                success: function(response) {
-                    // Handle the success response
-                    console.log('Request successful:', response);
-                    // Optionally, update the UI or notify the user
-                },
-                error: function(xhr, status, error) {
-                    // Handle the error response
-                    console.error('Error occurred:', error);
-                }
-            })
-        })
+
+     
+
+        
 
         // Function to clear the screen
         function clearScreen() {
             toggleVisibility(".hidden-items", false);
-            $("#user-search").val('');
+            $("#user-search").val("");
             $("#users-row").empty()
 
         }
@@ -193,6 +222,13 @@
         
     </div>
 </div>
+
+{% include "core/includes/friendModals/friend_request.html" %}
+{% include "core/includes/friendModals/cancel_friend_request.html" %}
+{% include "core/includes/friendModals/accept_reject_friend_request.html" %}
+{% include "core/includes/friendModals/remove_friend.html" %}
+
+
 
 
 {% endblock %}
