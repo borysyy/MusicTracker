@@ -193,7 +193,7 @@ class FriendList(models.Model):
         if account != self.user and account not in self.friends.all():
             self.friends.add(account)
             self.save()
-            friend_list, created = FriendList.objects.get_or_create(user=account)
+            friend_list = FriendList.objects.get(user=account)
             friend_list.friends.add(self.user)
     
     def remove_friend(self, account):
