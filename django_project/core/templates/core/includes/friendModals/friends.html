@@ -1,0 +1,113 @@
+
+<style>
+
+    .friend-profile-picture {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+
+    .friend-option-buttons {
+        background-color: transparent;
+        border: none;
+    }
+
+</style>
+
+<div class="modal fade" id="friendsList" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Friends List</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="list-group">
+                    {% if current_user.username == profile_user.username %}
+                        {% if sent_requests %}
+                            <h1>Sent Requests</h1>
+                                {% for sent_request in sent_requests %}
+
+                                    <a href="{% url 'core:profile' sent_request.to_user.username %}" class="list-group-item list-group-item-action">
+                                        <img class="friend-profile-picture" src="{{ sent_request.to_user.profile_picture.url }}" alt="">
+                                        <h1> {{ sent_request.to_user.username }} - {{ sent_request.created_at }} </h1>
+                                    </a>
+
+                                    <button 
+                                        class="friend-option-buttons"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#cancelFriendRequest"
+                                        data-username={{ sent_request.to_user.username }}
+                                    >
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </button>
+
+                                {% endfor %}
+                        {% endif %}
+
+                        {% if received_requests %}
+                            <h1>Received Requests</h1>
+                                {% for recv_request in received_requests %}
+
+                                    <a href="{% url 'core:profile' recv_request.from_user.username %}" class="list-group-item list-group-item-action">
+                                        <img class="friend-profile-picture" src="{{ recv_request.from_user.profile_picture.url }}" alt="">
+                                        <h1> {{ recv_request.from_user.username }} - {{ recv_request.created_at }} </h1>
+                                    </a>
+
+                                    <button 
+                                        class="friend-option-buttons"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#acceptRejectRequest"
+                                        data-username={{ recv_request.from_user.username }}
+                                    >
+                                        <i class="bi bi-person-exclamation"></i>
+                                    </button>
+
+                                {% endfor %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if friends %}
+                        <h1>Current Friends</h1>
+
+
+                        {% for friend in friends %}
+
+
+                            <a href="{% url 'core:profile' friend.username %}" class="list-group-item list-group-item-action">
+                                
+                                <img class="friend-profile-picture" src="{{ friend.profile_picture.url }}"> </img>
+                                <h1> {{ friend.username }} </h1>
+
+                            </a>
+
+                            {% if current_user.username == profile_user.username  %}
+                                <button 
+                                    class="friend-option-buttons"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#removeFriend"
+                                    data-username={{ friend.username }}
+                                >
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            {% endif %}
+                        
+                        {% endfor %}
+                    {% else %}
+                            <h1>Currently don't have friends, add someone! </h1>
+                    {% endif %}
+                </div>
+            </div>
+
+    
+        </div>
+    </div>
+</div>
+
+
