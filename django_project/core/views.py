@@ -74,7 +74,6 @@ def profile_view(request, username):
     sent_requests = FriendRequest.objects.filter(from_user=current_user, status="pending")
     received_requests = FriendRequest.objects.filter(to_user=current_user, status="pending")
     received_requests_count = received_requests.count()
-    # received_requests_count = 10
     collection_form = None
     update_form = None
 
