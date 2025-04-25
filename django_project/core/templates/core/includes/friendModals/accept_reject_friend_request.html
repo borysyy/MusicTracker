@@ -1,0 +1,64 @@
+<div id="acceptRejectRequest" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Accept or Reject Friend Request</h1>
+          <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="request-username"> </h5>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="rejectFriendRequestButton" data-bs-dismiss="modal">Reject</button>
+            <button class="btn btn-success" id="acceptFriendRequestButton" data-bs-dismiss="modal">Accept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+
+    $("#rejectFriendRequestButton").on("click", () => {
+        const friend = $(".modal-body").data("username")
+    
+        url = "{% url 'core:reject_friend_request' 'username' %}".replace('username', friend)
+        $.ajax({
+            url: url, 
+            type: "POST", 
+            success: function(response) {
+                // Handle the success response
+                console.log('Friend request rejected: ', response)
+                location.reload()
+
+            },
+            error: function(xhr, status, error) {
+                // Handle the error response
+                console.log('Error rejecting friend request:', error)
+            }
+        })
+    
+      })
+
+    $("#acceptFriendRequestButton").on("click", () => {
+        const friend = $(".modal-body").data("username")
+    
+        url = "{% url 'core:accept_friend_request' 'username' %}".replace('username', friend)
+        $.ajax({
+            url: url,
+            type: "POST",
+            success: function(response) {
+                console.log('Friend request accepted: ', response)
+                location.reload()
+
+            },
+            error: function(error) {
+                console.log('Error accepting friend request:', error)
+            }
+
+        })
+    
+      })
+
+
+</script>

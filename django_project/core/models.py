@@ -5,7 +5,9 @@ from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Index
-from .utils import generate_unique_code, rename_resize_images, get_image_hue
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from .utils import generate_unique_code, rename_resize_images
 
 
 # Custom User model extending Django's AbstractUser
@@ -45,7 +47,10 @@ class User(AbstractUser):
                                  )
                         
         super().save(update_fields=["profile_picture"])  # Save only the updated profile picture
-
+        
+    def __str__(self):
+        return self.username 
+    
 
 # Genre model to categorize music
 class Genre(models.Model):
@@ -176,3 +181,47 @@ class Collection(models.Model):
 
     def __str__(self):
         return self.name  # String representation
+
+class FriendList(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='friend_list')
+    friends = models.ManyToManyField(User, blank=True, related_name='friend_of')
+    
+    def __str__(self):
+        return f"{self.user.username}'s friends"
+    
+    def add_friend(self, account):
+        if account != self.user and account not in self.friends.all():
+            self.friends.add(account)
+            self.save()
+            friend_list = FriendList.objects.get(user=account)
+            friend_list.friends.add(self.user)
+    
+    def remove_friend(self, account):
+        if account in self.friends.all():
+            self.friends.remove(account)
+            
+    def unfriend(self, account):
+        account = User.objects.get(username=account)
+        
+        self.remove_friend(account)
+        
+        friend_list = FriendList.objects.get(user=account)
+        friend_list.remove_friend(self.user)
+
+class FriendRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+    from_user = models.ForeignKey(User, related_name='sent_friend_requests', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='received_friend_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+        
+    class Meta:
+         unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"Friend request from {self.from_user.username} to {self.to_user.username} is {self.status}"
+

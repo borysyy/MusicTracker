@@ -1,0 +1,41 @@
+<div id="friendRequest" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Send Request</h1>
+          <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="request-username"> </h5>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" id="requestFriendButton" data-bs-dismiss="modal">Request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+
+  $("#requestFriendButton").on("click", () => {
+    const friend = $(".modal-body").data("username")
+
+    const url = "{% url 'core:requesting_friend' 'username' %}".replace("username", friend)
+    $.ajax({
+        url: url, 
+        type: "POST", 
+        success: function(response) {
+            // Handle the success response
+            location.reload()
+
+        },
+        error: function(xhr, status, error) {
+            // Handle the error response
+            console.error("Error occurred:", error)
+        }
+    })
+
+  })
+
+</script>

@@ -188,12 +188,9 @@
             $('.modal-body .collection').text('From ' + $(event.relatedTarget).data('collection'))
           })
 
-          $('#delete-music .btn-danger').on('click', async () => {
+          $('#delete-music .btn-danger').on('click', () => {
             const type = $('.modal-body').data('type')
             const music = $('.modal-body').data('music')
-
-            console.log(music)
-
 
             const url = "{% url 'core:delete_music' current_user collection.code 'type' 'music' %}"
                     .replace('type', type)

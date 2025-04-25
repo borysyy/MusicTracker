@@ -1,15 +1,19 @@
+from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
+from django.core.serializers import serialize
 from django.urls import reverse
 from django.db import transaction
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
-from .models import User, Collection, Artist, Album
+from .models import User, Collection, FriendList, FriendRequest
 from .utils import get_image_hue, save_artist, save_album, save_in_collection
 from .spotify import get_results
 from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
@@ -64,9 +68,15 @@ def register_view(request):
 def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     current_user = request.user
-    collections = Collection.objects.filter(owner__username=username).order_by("name")
+    collections = Collection.objects.filter(owner__username=username).order_by("-date_created")
+    friends_list = FriendList.objects.get(user=profile_user)
+    friends = friends_list.friends.all()
+    sent_requests = FriendRequest.objects.filter(from_user=current_user, status="pending")
+    received_requests = FriendRequest.objects.filter(to_user=current_user, status="pending")
+    received_requests_count = received_requests.count()
     collection_form = None
     update_form = None
+
         
     if current_user == profile_user:
         collection_form = CollectionForm()
@@ -75,6 +85,10 @@ def profile_view(request, username):
     context = {
         "profile_user": profile_user,
         "collections": collections,
+        "friends": friends,
+        "sent_requests": sent_requests,
+        "received_requests": received_requests,
+        "received_requests_count": received_requests_count,
         "current_user": current_user,
         "collection_form": collection_form,
         "update_form": update_form
@@ -83,6 +97,7 @@ def profile_view(request, username):
     return render(request, "core/base_profile.html", context)
 
 # View for displaying a specific collection
+@login_required
 def collection_view(request, username, code):
     collection = get_object_or_404(Collection, code=code)
     current_user = request.user
@@ -103,8 +118,6 @@ def collection_view(request, username, code):
         
     collection.albums_list = albums
     
-    
-
     context = {
         "collection": collection,
         "current_user": current_user,
@@ -113,6 +126,7 @@ def collection_view(request, username, code):
     return render(request, "core/collection.html", context)
 
 # View for adding a new collection
+@login_required
 def add_collection_view(request, username):
     owner = get_object_or_404(User, username=username)
     if request.method == "POST":
@@ -130,7 +144,7 @@ def add_collection_view(request, username):
         else:
             print("form.errors:\n", collection_form.errors)
 
-
+@login_required
 def search_view(request):
     if request.method == "POST":
         user_input = request.POST.get("input", "")
@@ -151,6 +165,52 @@ def search_view(request):
             "user_collections": collections
         }
         return render(request, "core/search.html", context)
+
+@login_required
+def search_friends_view(request):
+    if request.method == "POST":
+        user_input = request.POST.get("input", "")
+        
+        users = User.objects.filter(
+            Q(username__icontains=user_input) | Q(first_name__icontains=user_input),
+            private=False
+        ).exclude(username=request.user.username).all()[:20]
+        
+        user_dict = {
+            "users": [
+                {
+                    "username": u.username,
+                    "first_name": u.first_name,
+                    "profile_picture": request.build_absolute_uri(u.profile_picture.url),
+                    "private": u.private
+                }
+                for u in users
+            ]
+        }
+                        
+        return JsonResponse(user_dict)
+    else:
+        return render(request, "core/add_friends.html")
+
+@login_required
+def get_current_requests_view(request):
+    outgoing_requests = list(FriendRequest.objects.filter(from_user=request.user, status="pending").values("to_user__username"))
+    incoming_requests = list(FriendRequest.objects.filter(to_user=request.user, status="pending").values("from_user__username"))
+    accepted_requests = list(FriendList.objects
+        .filter(user=request.user)
+        .exclude(friends__username__isnull=True)
+        .values("friends__username")
+    )
+    
+
+    
+    requests_dict = {
+        "outgoing_requests": outgoing_requests, 
+        "incoming_requests": incoming_requests,
+        "accepted_requests": accepted_requests
+    }
+
+    return JsonResponse(requests_dict)
         
 # API view for updating user information
 class UserUpdate(APIView):
@@ -201,8 +261,9 @@ class SaveToCollection(APIView):
             }, status=200)
         return Response(serializer.errors, status=400)
 
-
 class DeleteFromCollection(APIView):
+    permission_classes = [IsAuthenticated]
+
     def delete(self, request, username, code, type, music):
         collection = Collection.objects.get(code=code)
         
@@ -217,4 +278,62 @@ class DeleteFromCollection(APIView):
                 
         redirect_url = reverse("core:collection", kwargs={"username": username, "code": code})
         return Response({"redirect_url": redirect_url})
-            
+
+# Sending a friend request
+class RequestFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, username):
+        now = timezone.now()
+        friend = get_object_or_404(User, username=username)
+        new_request = FriendRequest.objects.create(from_user=request.user, to_user=friend, created_at=now)
+        return Response({'success': f'{friend.username} requested as a friend.'})
+
+# Canceling a friend request
+class CancelFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, username):
+        friend = get_object_or_404(User, username=username)
+        old_request = FriendRequest.objects.get(from_user=request.user, to_user=friend)
+        old_request.delete()
+        return Response({'success': f'Friend request to {friend.username} canceled'})
+    
+# Accepting a friend request
+class AcceptFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, username):
+        friend = get_object_or_404(User, username=username)
+        accepted_request = FriendRequest.objects.get(from_user=friend, to_user=request.user)
+        accepted_request.status = "accepted"
+        accepted_request.save()
+        friends_list = FriendList.objects.get(user=request.user)
+        friends_list.add_friend(friend)
+        return Response({'success': f'Frend request from {friend.username} accepted'})
+
+# Rejecting a friend request
+class RejectFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, username):
+        friend = get_object_or_404(User, username=username)
+        current_request = FriendRequest.objects.get(from_user=friend, to_user=request.user)
+        current_request.delete()
+        return Response({'success': f'Friend request from {friend.username} rejected'})
+
+# Removing a friend
+class RemoveFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, username):
+        friend = get_object_or_404(User, username=username)
+        accepted_request = FriendRequest.objects.get(
+            (Q(from_user=friend, to_user=request.user) | Q(from_user=request.user, to_user=friend)) &
+            Q(status="accepted")
+        )
+        accepted_request.delete()
+        friend_list = FriendList.objects.get(user=request.user)
+        friend_list.unfriend(username)
+        return Response({'success': f'{username} is removed as a friend.'})
+        
