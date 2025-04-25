@@ -68,7 +68,7 @@ def register_view(request):
 def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     current_user = request.user
-    collections = Collection.objects.filter(owner__username=username).order_by("name")
+    collections = Collection.objects.filter(owner__username=username).order_by("-date_created")
     friends_list = FriendList.objects.get(user=profile_user)
     friends = friends_list.friends.all()
     sent_requests = FriendRequest.objects.filter(from_user=current_user, status="pending")
