@@ -5,11 +5,62 @@
 
 {% block style %} 
 <style>
+    
     .card-title {
         white-space: nowrap;        /* Prevents text from wrapping to the next line */
         overflow: hidden;           /* Hides any overflowing text */
         text-overflow: ellipsis;    /* Adds '...' at the end if the text overflows */
         max-width: 700px;           /* Set a max width to trigger truncation */
+    }
+
+    #search-wrapper {
+        height: 80vh;
+        transition: all 0.5s ease-in-out;
+    }
+
+    #search-wrapper.moved-up {
+        height: auto;
+        margin-top: 2rem;
+    }
+
+    .custom-search {
+        width: 100%;
+        padding: 0.75rem 1.2rem;
+        font-size: 1rem;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .custom-search:focus {
+        border-color: #1DB954;
+        box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        outline: none;
+    }
+
+    .clear-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #999;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #666;
+        z-index: 2;
+    }
+
+    .clear-icon:hover {
+        color: #c0392b;
     }
     
 </style>
@@ -25,11 +76,29 @@
         // Handle search input
         $("#music-search").on("input", () => {
             clearTimeout(debounceTimer);
+
+            const hasText = $("#music-search").val().trim().length > 0;
+
+            // Trigger move-up effect
+            $("#search-wrapper").addClass("moved-up");
+
+            if (hasText) {
+                $("#clear-btn").removeClass("d-none");
+            } else {
+                $("#clear-btn").addClass("d-none");
+            }
+
             // If user has stopped typing after half a second, send input to server
             debounceTimer = setTimeout(() => {
                 searchMusic();
             }, 500);
         });
+
+        // Clear input when X icon is clicked
+        $("#clear-btn").on("click", () => {
+        clearScreen();
+        });
+
 
         // Function to search for music
         function searchMusic() {
@@ -104,13 +173,12 @@
                         <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
                         <div class="card-body">
                             <h2 class="card-title">${name}</h2>
-                            <button class="btn btn-success addToCollection" data-bs-toggle="modal" data-bs-target="#saveMusic" 
+                            <button class="btn btn-success addToCollection btn-md mt-1 mb-2" data-bs-toggle="modal" data-bs-target="#saveMusic" 
                                 data-type="${type}" 
                                 data-name="${name}" 
                                 data-image="${image_url}" 
-                                data-uri="${uri}"
-                            > 
-                                <h3>Add to a collection</h3>
+                                data-uri="${uri}">
+                                Add to Collection
                             </button>
                             <a class="text-decoration-none" href="https://open.spotify.com/artist/${id}" target="_blank">
                                 <h4>Spotify <i class="bi bi-spotify"></i></h4>
@@ -128,16 +196,16 @@
                             <h2 class="card-title">${title}</h2>
                             <h3 class="card-title">${artist}</h3>
                             <h4 class="card-title">${release_year}</h4>
-                            <button class="btn btn-success addToCollection" data-bs-toggle="modal" data-bs-target="#saveMusic" 
+                            <button class="btn btn-success addToCollection btn-md mt-1 mb-2" data-bs-toggle="modal" data-bs-target="#saveMusic" 
                                 data-type="${type}"
                                 data-title="${title}" 
                                 data-year="${release_year}"
                                 data-artist="${artist}" 
                                 data-art="${cover_url}"
-                                data-uri="${uri}"
-                            > 
-                                <h4>Add to a collection</h4>
+                                data-uri="${uri}">
+                                Add to Collection
                             </button>
+
                             <a class="text-decoration-none" href="https://open.spotify.com/album/${id}" target="_blank">
                                 <h5>Spotify <i class="bi bi-spotify"></i> </h5>
                             </a>
@@ -156,6 +224,8 @@
             toggleVisibility(".hidden-items", false);
             $("#music-search").val('');
             $(".music").empty()
+            $("#search-wrapper").removeClass("moved-up");
+            $("#clear-btn").addClass("d-none");
 
         }
 
@@ -207,21 +277,17 @@
 
 {% block main %} 
 
-<div class="d-flex justify-content-center">
-    <form method="post">
+<div id="search-wrapper" class="d-flex justify-content-center align-items-center flex-column">
+    <form method="post" class="w-100 d-flex justify-content-center position-relative" style="max-width: 500px;">
         {% csrf_token %}
-        <div>
-            <input id="music-search" type="text">
-        </div>
+        <i class="bi bi-search search-icon"></i>
+        <input id="music-search" type="text" class="form-control custom-search pe-5 ps-5" placeholder="Search for Music...">
+        <i id="clear-btn" class="bi bi-x-circle clear-icon d-none"></i>
     </form>
 </div>
 
-<div class="d-flex flex-column align-items-center">
+<div class="d-flex flex-column align-items-center" style="font-family: 'Montserrat', sans-serif;">
     <h1 class="display-5 text-center hidden-items">Spotify Results</h1>
-    <div class="hidden-items" id="clear-btn">
-        <button>Clear</button>
-    </div>
-
     <div class="container" id="music-container">
         <h1 class="hidden-items">Top Result:</h1>
         <div class="row">
