@@ -20,7 +20,10 @@ from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSer
 
 # View for rendering the home page
 def home_view(request):
-    return render(request, "core/index.html")
+    if request.user.is_authenticated:
+        return redirect("core:profile", request.user.username)
+    else:
+        return render(request, "core/index.html")
 
 # View for logging out a user
 def logout_view(request):
@@ -42,7 +45,11 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     context = {"form": form}
-    return render(request, "core/login.html", context)
+    
+    if request.user.is_authenticated:
+        return redirect("core:profile", request.user.username)
+    else:
+        return render(request, "core/login.html", context)
 
 # View for handling user registration
 def register_view(request):
@@ -62,7 +69,11 @@ def register_view(request):
         register_form = CustomUserCreationForm()
         
     context = {"form": register_form}
-    return render(request, "core/register.html", context)
+    
+    if request.user.is_authenticated:
+        return redirect("core:profile", request.user.username)
+    else:
+        return render(request, "core/register.html", context)
 
 # View for displaying user profiles
 def profile_view(request, username):

@@ -1,10 +1,14 @@
 {% extends "core/base.html" %} 
+
 {% load static %}
 
-{% block title %} Home {% endblock %}
 
 {% block style %} 
 
+<style>
+   
+
+</style>
 
 {% endblock %}
 
@@ -15,6 +19,16 @@
 {% endblock %}
 
 {% block main %} 
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 90vh;">
+    <div class="d-flex flex-column gap-3">
+        <a href="{% url 'core:register' %}" class="btn btn-primary btn-lg">Create Account</a>
+        <a href="{% url 'core:login' %}" class="btn btn-primary btn-lg">Login</a>
+        
+    </div>
+</div>
+
+
 
 
 {% endblock %}
