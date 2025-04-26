@@ -1,10 +1,9 @@
 from django.utils import timezone
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponse
-from django.core.serializers import serialize
+from django.http import JsonResponse
 from django.urls import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -14,7 +13,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
 from .models import User, Collection, FriendList, FriendRequest
-from .utils import get_image_hue, save_artist, save_album, save_in_collection
+from .utils import get_image_hue
 from .spotify import get_results
 from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
 
@@ -157,6 +156,10 @@ def add_collection_view(request, username):
 
 @login_required
 def search_view(request):
+    current_user = request.user
+    collection_form = CollectionForm()
+
+
     if request.method == "POST":
         user_input = request.POST.get("input", "")
         
@@ -173,7 +176,9 @@ def search_view(request):
         collections = Collection.objects.filter(owner__username = request.user.username)
         
         context = {
-            "user_collections": collections
+            "user_collections": collections,
+            "collection_form": collection_form,
+            "current_user": current_user
         }
         return render(request, "core/search.html", context)
 
