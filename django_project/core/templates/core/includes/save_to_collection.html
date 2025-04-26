@@ -99,9 +99,6 @@
                 type: "POST",
                 processData: false,
                 contentType: "application/json",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
                 data: JSON.stringify(payload),
                 success: function(response) {
                     console.log("Success:", response);

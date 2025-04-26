@@ -200,10 +200,7 @@
                 url: url,
                 type: "DELETE",
                 processData: false, 
-                contentType: false,  
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'  
-                },        
+                contentType: false,       
                 success: function(response) {
                     if (response.redirect_url) {
                         window.location.href = response.redirect_url  

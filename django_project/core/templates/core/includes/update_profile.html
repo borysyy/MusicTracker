@@ -117,10 +117,7 @@
             url: "{% url 'core:update_profile' current_user %}", 
             type: 'PUT',
             processData: false, 
-            contentType: false,  
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'  
-            },
+            contentType: false,
             data: formData,
             success: function(response) {
                 if (response.redirect_url) {
