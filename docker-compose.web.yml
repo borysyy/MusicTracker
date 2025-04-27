@@ -31,6 +31,7 @@ services:
     environment:
      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
      DEBUG: ${DEBUG}
+     ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     depends_on:
       - db
     env_file:
