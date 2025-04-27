@@ -103,14 +103,11 @@ def get_top_result(input):
         highest_popularity_artist = list(sorted_artist_items.values())[0]
     
     # Compare the popularity of the highest album and artist and pick the highest    
-    if not highest_popularity_album:
-        top_result = highest_popularity_artist
-    elif not highest_popularity_artist:
-        top_result = highest_popularity_album
-    elif highest_popularity_album['popularity'] > highest_popularity_artist['popularity']:
-        top_result = highest_popularity_album
-    else:
-        top_result = highest_popularity_artist
+    top_result = max(
+        filter(None, [highest_popularity_album, highest_popularity_artist]),
+        key=lambda x: x['popularity']
+    )
+
         
 
     return top_result
