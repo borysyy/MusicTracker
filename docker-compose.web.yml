@@ -1,0 +1,55 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: shelfsounds_mysql_prod
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    volumes:
+      - prod_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+      - .env
+    
+  django-web:
+    build: .
+    container_name: shelfsounds_django_prod
+    restart: always
+    volumes:
+        - ./django_project/media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+     DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+     DEBUG: ${DEBUG}
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  nginx:
+    image: nginx:latest
+    container_name: shelfsounds_nginx_prod
+    restart: always
+    ports: 
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./django_project/media:/app/media
+      - ./django_project/staticfiles:/app/staticfiles
+
+    depends_on:
+      - web
+    
+
+volumes:
+  prod_data:

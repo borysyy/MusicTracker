@@ -58,6 +58,9 @@ django_project/*
 !requirements.in
 !requirements.txt
 
+!Dockerfile
+!docker-compose.web.yml
+
 # Other
 **/__pycache__
 **/.env
