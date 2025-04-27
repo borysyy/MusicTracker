@@ -9,7 +9,6 @@ from django.db import transaction
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
 from .models import User, Collection, FriendList, FriendRequest
@@ -230,6 +229,8 @@ def get_current_requests_view(request):
         
 # API view for updating user information
 class UserUpdate(APIView):
+    permission_classes = [IsAuthenticated]
+
     def put(self, request, username):
         user = get_object_or_404(User, username=username)
         serializer = UserSerializer(user, data=request.data, partial=True)
@@ -246,6 +247,8 @@ class UserUpdate(APIView):
 
 # API view for updating a collection
 class CollectionUpdate(APIView):
+    permission_classes = [IsAuthenticated]
+
     def put(self, request, username, code):
         collection = get_object_or_404(Collection, code=code)
         serializer = CollectionSerializer(collection, data=request.data, partial=True)
@@ -262,7 +265,7 @@ class CollectionUpdate(APIView):
             else:
                 return Response(serializer.errors, status=400)
 
-            
+# API view for saving music to a collection
 class SaveToCollection(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -277,6 +280,7 @@ class SaveToCollection(APIView):
             }, status=200)
         return Response(serializer.errors, status=400)
 
+# API view for deleting music from a collection
 class DeleteFromCollection(APIView):
     permission_classes = [IsAuthenticated]
 
