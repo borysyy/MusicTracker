@@ -61,7 +61,7 @@ services:
       - ./django_project/staticfiles:/app/staticfiles
       - ./django_project/media:/app/media
     depends_on:
-      - web
+      - django-web
     
 
 volumes:
