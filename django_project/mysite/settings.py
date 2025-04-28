@@ -98,7 +98,7 @@ DATABASES = {
     "default": {
         "ENGINE": config("MYSQL_BACKEND"),
         "HOST": config("MYSQL_HOST"),
-        "PORT": config("MYSQL_PORT"),
+        "PORT": config("MYSQL_DJANGO_PORT"),
         "NAME": config("MYSQL_DATABASE"),
         "USER": config("MYSQL_USER"),
         "PASSWORD": config("MYSQL_PASSWORD"),
