@@ -80,8 +80,8 @@ def profile_view(request, username):
     collections = Collection.objects.filter(owner__username=username).order_by("-date_created")
     friends_list = FriendList.objects.get(user=profile_user)
     friends = friends_list.friends.all()
-    sent_requests = FriendRequest.objects.filter(from_user=current_user, status="pending")
-    received_requests = FriendRequest.objects.filter(to_user=current_user, status="pending")
+    sent_requests = FriendRequest.objects.filter(from_user=profile_user, status="pending")
+    received_requests = FriendRequest.objects.filter(to_user=profile_user, status="pending")
     received_requests_count = received_requests.count()
     collection_form = None
     update_form = None
