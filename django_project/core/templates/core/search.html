@@ -62,6 +62,12 @@
     .clear-icon:hover {
         color: #c0392b;
     }
+
+    .card-img-top {
+        width: auto;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+    }
     
 </style>
 {% endblock %}
@@ -170,7 +176,7 @@
         
                 html = `
                     <div class="card card-border" style="width: 18rem;">
-                        <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image" width="300" height="300">
+                        <img src="${image_url}" class="card-img-top border-bottom border-white" alt="${name}-image">
                         <div class="card-body">
                             <h2 class="card-title">${name}</h2>
                             <button class="btn btn-success addToCollection btn-md mt-1 mb-2" data-bs-toggle="modal" data-bs-target="#saveMusic" 
@@ -191,7 +197,7 @@
         
                 html = `
                     <div class="card card-border" style="width: 18rem;">
-                        <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image" width="300" height="300">
+                        <img src="${cover_url}" class="card-img-top border-bottom border-white" alt="${title}-image">
                         <div class="card-body">
                             <h2 class="card-title">${title}</h2>
                             <h3 class="card-title">${artist}</h3>

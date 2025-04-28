@@ -46,6 +46,14 @@
         border-radius: 15px 15px 0px 0px;
     }
 
+    .card-img-top {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+    }
+    
+
   
     {% if not profile_user.private or current_user.username == profile_user.username %}
 
@@ -144,7 +152,7 @@
                 <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
                     <div class="card card-border card-size"> 
                         <a href="{% url 'core:collection' profile_user collection.code %}" style="text-decoration: none; color: white;">
-                            <img src="{{ collection.thumbnail.url }}" class="card-img-top" alt="Collection Thumbnail" width="300px" height="300px">
+                            <img src="{{ collection.thumbnail.url }}" class="card-img-top img-fluid" alt="Collection Thumbnail">
                             <div class="card-body">
                                 <h4 class="card-title">{{ collection.name }}</h4>
                             </div>  

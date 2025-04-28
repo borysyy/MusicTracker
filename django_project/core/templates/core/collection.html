@@ -7,13 +7,29 @@
 <style>
 
     .collection-thumbnail {
+        width: 300px; 
+        height: 300px;
+        object-fit: cover;
         border-radius: 15px;
     }
 
     .update-collection-img img{
         width: 300px;
         height: 300px;
+        object-fit: cover;
+        border-radius: 15px;
     }
+
+    .card-img-top {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+    }
+    
+
+    
+
 
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
@@ -101,7 +117,7 @@
     
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
-                <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}" width="300" height="300">
+                <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% if current_user == collection.owner %}
                 <button
                   class="delete btn p-0"
@@ -134,7 +150,7 @@
 
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
-                <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}" width="300" height="300">
+                <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% if current_user == collection.owner %}
                 <button
                   class="delete btn p-0"

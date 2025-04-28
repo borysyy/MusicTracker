@@ -59,7 +59,8 @@ def get_results(input):
             album_artist = get_artist_by_uri(uri)
             
             artist_results = append_dicts(album_artist, artist_results)
-
+            
+            
  
 
     return top_result, album_results, artist_results
@@ -80,9 +81,11 @@ def get_top_result(input):
 
     album_results = spotify.search(q=f'album:{input}',type="album", limit=5)    
     artist_results = spotify.search(q=f'artist:{input}', type="artist", limit=5)
+
     
     album_items = album_results.get('albums', {}).get('items', [])
     artist_items = artist_results.get('artists', {}).get('items', [])
+    
     
     popularity_check = True
     album_items = create_album_dict(album_lookup, album_items, popularity_check)
@@ -160,10 +163,7 @@ def get_artist_by_uri(uri):
     name = results['name']
     uri = results['uri']
     image = results['images'][1]['url'] if results['images'] else default_image
-    
-    pprint(results)
-    
-    
+        
     artist_lookup[1] = {
         'type': 'artist',
         'id': id,
@@ -180,7 +180,6 @@ def get_artist_by_uri(uri):
 # Create a dictionary of albums
 def create_album_dict(album_lookup, album_items, popularity_check = False):
     for i, album_item in enumerate(album_items):
-        pprint(album_item["artists"])
         id = album_item['id']
         uri = album_item['uri']
         title = album_item['name']
