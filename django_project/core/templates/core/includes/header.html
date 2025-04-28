@@ -7,18 +7,30 @@
       <!-- Left Section: Title and Search -->
       <div class="d-flex align-items-center">
         <a class="text-decoration-none" href="{% url 'core:home' %}">
-          <div class="fs-1" id="title-header">
+          <div class="fs-3 fs-md-1" id="title-header">
             Shelf Sounds
           </div>
         </a>
-        {% if user.is_authenticated %}
-          <a href="{% url 'core:search' %}" class="ms-3 text-decoration-none">
-            Search for Music
-          </a>
-          <a href="{% url 'core:add_friends' %}" class="ms-3 text-decoration-none">
-            Search for Friends
-          </a>
-        {% endif %}
+          {% if user.is_authenticated %}
+
+            <div class="dropdown ms-1 mt-1">
+              <button class="btn" data-bs-toggle="dropdown">
+                Search
+              </button>
+              <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'core:search' %}">
+                      Search for Music
+                    </a>              
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'core:add_friends' %}">
+                      Search for Friends
+                    </a>             
+                  </li>
+                </ul>
+            </div>
+          {% endif %}
       </div>
 
       <!-- Right Section: Profile Dropdown -->
