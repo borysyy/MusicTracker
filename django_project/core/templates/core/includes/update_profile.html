@@ -110,27 +110,24 @@
 
     // Update your profile      
     $("#updateUserButton").click(function() {
-
-        let formData = new FormData($("#updateUserForm")[0])
-
-        $.ajax({
-            url: "{% url 'core:update_profile' current_user %}", 
-            type: 'PUT',
-            processData: false, 
-            contentType: false,
-            data: formData,
-            success: function(response) {
-                if (response.redirect_url) {
-                    window.location.href = response.redirect_url  
-                }
-                console.log("Profile updated successfully:", response)
-            },
-            error: function(xhr) {
-                console.error("Update failed:", xhr.responseText) 
+        let formData = new FormData($("#updateUserForm")[0]);
+    
+        fetch("{% url 'core:update_profile' current_user %}", {
+            method: 'PUT', 
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
             }
-
+            console.log("Profile updated successfully:", data);
+        })
+        .catch(error => {
+            console.error("Update failed:", error);
         })
     })
+    
 
 
 </script>
