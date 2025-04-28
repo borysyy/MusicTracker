@@ -106,7 +106,6 @@ def profile_view(request, username):
     return render(request, "core/base_profile.html", context)
 
 # View for displaying a specific collection
-@login_required
 def collection_view(request, username, code):
     collection = get_object_or_404(Collection, code=code)
     current_user = request.user
