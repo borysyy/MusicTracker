@@ -1,7 +1,7 @@
 import os
 import re
 import uuid
-from PIL import Image
+from PIL import Image, ExifTags
 from django.apps import apps
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -89,6 +89,26 @@ def rename_resize_images(instance, **kwargs):
         if os.path.exists(original_image):
             # Open and convert image to RGB mode
             img = Image.open(original_image)
+            
+            # Correct orientation
+            try:
+                exif = img._getexif()
+                if exif is not None:
+                    orientation_key = next(
+                        (key for key, value in ExifTags.TAGS.items() if value == "Orientation"),
+                        None
+                    )
+                    if orientation_key is not None:
+                        orientation = exif.get(orientation_key)
+                        if orientation == 3:
+                            img = img.rotate(180, expand=True)
+                        elif orientation == 6:
+                            img = img.rotate(270, expand=True)
+                        elif orientation == 8:
+                            img = img.rotate(90, expand=True)
+            except Exception as e:
+                print(f"Could not correct image orientation: {e}")
+                
             img = img.convert("RGB")
 
             # Get the directory where the image should be stored
