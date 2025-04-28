@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "${MYSQL_PORT}:${MYSQL_PORT}"
+      - "${MYSQL_PORT}:3306"
     volumes:
       - prod_data:/var/lib/mysql
     healthcheck:
@@ -25,6 +25,8 @@ services:
     container_name: shelfsounds_django_prod
     restart: always
     volumes:
+        - ./django_project/core:/app/core
+        - ./django_project/staticfiles:/app/staticfiles
         - ./django_project/media:/app/media
     ports:
       - "8000:8000"
@@ -41,7 +43,8 @@ services:
      MYSQL_USER: ${MYSQL_USER}
      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
     command: >
@@ -56,13 +59,15 @@ services:
     restart: always
     ports: 
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./django_project/staticfiles:/app/staticfiles
       - ./django_project/media:/app/media
+      - /etc/letsencrypt/live/shelfsounds.com/fullchain.pem:/etc/letsencrypt/live/shelfsounds.com/fullchain.pem:ro
+      - /etc/letsencrypt/live/shelfsounds.com/privkey.pem:/etc/letsencrypt/live/shelfsounds.com/privkey.pem:ro
     depends_on:
       - django-web
-    
 
 volumes:
   prod_data:
