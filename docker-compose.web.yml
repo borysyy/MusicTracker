@@ -32,6 +32,14 @@ services:
      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
      DEBUG: ${DEBUG}
      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+     SPOTIPY_CLIENT_ID: ${SPOTIPY_CLIENT_ID}
+     SPOTIPY_CLIENT_SECRET: ${SPOTIPY_CLIENT_SECRET}
+     MYSQL_BACKEND: ${MYSQL_BACKEND}
+     MYSQL_HOST: ${MYSQL_HOST}
+     MYSQL_PORT: ${MYSQL_PORT}
+     MYSQL_DATABASE: ${MYSQL_DATABASE}
+     MYSQL_USER: ${MYSQL_USER}
+     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - db
     env_file:
@@ -45,9 +53,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./django_project/media:/app/media
       - ./django_project/staticfiles:/app/staticfiles
-
+      - ./django_project/media:/app/media
     depends_on:
       - web
     
