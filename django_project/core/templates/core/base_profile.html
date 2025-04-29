@@ -76,93 +76,95 @@
 
 {% if not profile_user.private or current_user.username == profile_user.username %}
 
-<div class="container mt-2">
-    <div class="row justify-content-start">
-        <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
-            <div class="profile-img-circle">
-                <img src="{{ profile_user.profile_picture.url }}" alt="Profile picture">
-            </div>
-            <div style="white-space: nowrap;">
-                <h1>{{ profile_user.username }}</h1>
-                <h2>{{ profile_user.first_name }}</h2>
-                <h4>Date Joined: {{ profile_user.date_joined|date:"F j Y" }}</h4>
-            </div>
+    <div class="container mt-2">
+        <div class="row justify-content-start">
+            <div class="col-sm-2 col-md-3 col-lg-4 d-flex flex-column align-items-center flex-wrap">
+                <div class="profile-img-circle">
+                    <img src="{{ profile_user.profile_picture.url }}" alt="Profile picture">
+                </div>
+                <div style="white-space: nowrap;">
+                    <h1>{{ profile_user.username }}</h1>
+                    <h2>{{ profile_user.first_name }}</h2>
+                    <h4>Date Joined: {{ profile_user.date_joined|date:"F j Y" }}</h4>
+                </div>
 
-            <div class="d-flex justify-content-end">
-                <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#friendsList">
-                    <h3>
-                        Friends List <i class="bi bi-person-lines-fill"></i> 
-                        {% if received_requests %} 
-                            {% if received_requests_count < 10  %}
-                            <span class="badge text-bg-danger rounded-pill">{{ received_requests_count }}</span>
-                            {% else %}
-                                <span class="badge text-bg-danger rounded-pill">9+</span>
-                            {% endif %}
-                        {% endif %}                   
-                     </h3>
-                </button>
+                <div class="d-flex justify-content-end">
+                    <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#friendsList">
+                        <h3>
+                            Friends List <i class="bi bi-person-lines-fill"></i> 
+                            {% if current_user.username == profile_user.username %}
+                                {% if received_requests %} 
+                                    {% if received_requests_count < 10  %}
+                                    <span class="badge text-bg-danger rounded-pill">{{ received_requests_count }}</span>
+                                    {% else %}
+                                        <span class="badge text-bg-danger rounded-pill">9+</span>
+                                    {% endif %}
+                                {% endif %}      
+                            {% endif %}             
+                        </h3>
+                    </button>
+                </div>
+
+                {% if current_user.username == profile_user.username %}
+                    <div class="d-flex justify-content-end">
+                        <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateProfile">
+                            Edit Profile <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
+                {% endif %}
+
             </div>
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+            <div class="fs-1"> 
+                Collections
+                {% if not collections %}
+                    {% if current_user.username == profile_user.username %}
+                        <div class="fs-2">
+                            You currently have no collections.
+                            Add one!
+                        </div>
+                    {% else %}
+                        <div class="fs-2">
+                            {{ profile_user.username }} currently has no collections.
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    
+
+        <div class="row" id="card-rows">
 
             {% if current_user.username == profile_user.username %}
-                <div class="d-flex justify-content-end">
-                    <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateProfile">
-                        Edit Profile <i class="bi bi-pencil"></i>
+                <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                    <button style="background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#addCollection">
+                        <div class="card card-border d-flex justify-content-center align-items-center card-size">
+                            <i class="bi bi-plus plus-icon"></i>
+                        </div>
                     </button>
                 </div>
             {% endif %}
 
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="text-center">
-        <div class="fs-1"> 
-            Collections
-            {% if not collections %}
-                {% if current_user.username == profile_user.username %}
-                    <div class="fs-2">
-                        You currently have no collections.
-                        Add one!
+            {% if collections %}
+                {% for collection in collections %}
+                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                        <div class="card card-border card-size"> 
+                            <a href="{% url 'core:collection' profile_user collection.code %}" style="text-decoration: none; color: white;">
+                                <img src="{{ collection.thumbnail.url }}" class="card-img-top img-fluid" alt="Collection Thumbnail">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ collection.name }}</h4>
+                                </div>  
+                            </a>
+                        </div>
                     </div>
-                {% else %}
-                    <div class="fs-2">
-                        {{ profile_user.username }} currently has no collections.
-                    </div>
-                {% endif %}
+                {% endfor %}
             {% endif %}
         </div>
     </div>
-   
-
-    <div class="row" id="card-rows">
-
-        {% if current_user.username == profile_user.username %}
-        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-            <button style="background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#addCollection">
-                <div class="card card-border d-flex justify-content-center align-items-center card-size">
-                    <i class="bi bi-plus plus-icon"></i>
-                </div>
-            </button>
-        </div>
-        {% endif %}
-
-        {% if collections %}
-            {% for collection in collections %}
-                <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                    <div class="card card-border card-size"> 
-                        <a href="{% url 'core:collection' profile_user collection.code %}" style="text-decoration: none; color: white;">
-                            <img src="{{ collection.thumbnail.url }}" class="card-img-top img-fluid" alt="Collection Thumbnail">
-                            <div class="card-body">
-                                <h4 class="card-title">{{ collection.name }}</h4>
-                            </div>  
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-</div>
 
 {% else %}
 
