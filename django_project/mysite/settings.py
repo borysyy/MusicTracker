@@ -31,6 +31,12 @@ STATICFILES_DIRS = [
 
 LOGIN_URL = "/"
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.shelfsounds.com',
+    'https://shelfsounds.com', 
+]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
