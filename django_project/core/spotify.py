@@ -14,7 +14,7 @@ client_credentials_manager = SpotifyClientCredentials(
 
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-default_image = static("default/default.png")
+default_image = static("default/default.jpg")
 
 # Get all of the results based off the user input
 def get_results(input):

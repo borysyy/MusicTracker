@@ -12,3 +12,7 @@ COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY ./django_project /app/
+
+COPY ./static/default/default-profile.jpg ./media/profile_pictures/
+
+COPY ./static/default/default.jpg ./media/collection_thumbnails/
