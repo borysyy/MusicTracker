@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %} {{ collection.name }} {% endblock %}
 
@@ -117,7 +118,11 @@
     
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
-                <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
+                {% if artist.image %}
+                    <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
+                {% else %}
+                    <img src="{% static "default/default.jpg" %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
+                {% endif %}
                 {% if current_user == collection.owner %}
                 <button
                   class="delete btn p-0"
@@ -150,7 +155,11 @@
 
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4">
             <div class="card card-border" style="width: 18rem;">
-                <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                {% if album.cover_art %}
+                    <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                {% else %}
+                    <img src="{% static "default/default.jpg" %} %}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                {% endif %}
                 {% if current_user == collection.owner %}
                 <button
                   class="delete btn p-0"

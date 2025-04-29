@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from .models import User, Collection, Artist, Album
 
+
 # Serializer for the User model
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,12 +86,12 @@ class CollectionSaveSerializer(serializers.Serializer):
     
     # Artist-specific
     name = serializers.CharField(required=False)
-    image = serializers.URLField(required=False)
+    image = serializers.URLField(required=False, allow_blank=True)
     
     # Album-specific
     title = serializers.CharField(required=False)
     release_year = serializers.IntegerField(required=False)
-    cover_art = serializers.URLField(required=False)
+    cover_art = serializers.URLField(required=False, allow_blank=True)
     artist_name = serializers.CharField(required=False)
 
     def validate(self, data):

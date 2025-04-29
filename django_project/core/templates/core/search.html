@@ -255,9 +255,16 @@
                 const name = $(this).data("name")
                 const image = $(this).data("image")
                 const uri = $(this).data("uri")
-                $("#artist-image").val(image)
+                if(image == "/static/default/default.jpg") {
+                    $("#artist-image").val("")
+                }
+                else {
+                    $("#artist-image").val(image)
+
+                }
                 $("#artist-uri").val(uri)
                 $("#artist-name").val(name)
+
 
             } else if (type === "album") {
                 const title = $(this).data("title")
@@ -266,9 +273,15 @@
                 const art = $(this).data("art")
                 const uri = $(this).data("uri")
 
+                if(art == "/static/default/default.jpg") {
+                    $("#album-art").val("")
+                } 
+                else {
+                    $("#album-art").val(art)
+                }
+
                 $("#album-title").val(title)
                 $("#album-year").val(year)
-                $("#album-art").val(art)
                 $("#album-uri").val(uri)
                 $("#artist-name").val(artist)
 
