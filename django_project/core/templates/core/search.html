@@ -75,6 +75,10 @@
 {% block script %}
 <script>
     $(() => {
+        $("form").on("submit", function(e) {
+            e.preventDefault()
+        })
+        
         toggleVisibility(".hidden-items", false); 
         $("#clear-btn").click(clearScreen);
         let debounceTimer;
