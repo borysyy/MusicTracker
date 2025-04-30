@@ -88,11 +88,20 @@ def profile_view(request, username):
     collection_form = None
     update_form = None
 
-        
+    # 🔹 Add this helper function inside the view
+    def is_color_light(hex_color):
+        hex_color = hex_color.lstrip("#")
+        r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        brightness = (r*299 + g*587 + b*114) / 1000
+        return brightness > 186  # >186 = light background
+
+    # 🔹 Determine if background is light
+    is_light_bg = is_color_light(profile_user.profile_hue or "#ffffff")  # fallback to white if None
+
     if current_user == profile_user:
         collection_form = CollectionForm()
         update_form = ProfileUpdateForm(instance=current_user)
-        
+
     context = {
         "profile_user": profile_user,
         "collections": collections,
@@ -102,9 +111,10 @@ def profile_view(request, username):
         "received_requests_count": received_requests_count,
         "current_user": current_user,
         "collection_form": collection_form,
-        "update_form": update_form
+        "update_form": update_form,
+        "is_light_bg": is_light_bg,  # ✅ Add to context
     }
-    
+
     return render(request, "core/base_profile.html", context)
 
 # View for displaying a specific collection
