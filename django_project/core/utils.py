@@ -145,6 +145,12 @@ def rename_resize_images(instance, **kwargs):
 
     except Exception as e:
         print(f"Error processing image: {e}")
+        
+def is_color_light(hex_color):
+    hex_color = hex_color.lstrip("#")
+    r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    brightness = (r*299 + g*587 + b*114) / 1000
+    return brightness > 186  # >186 = light background
 
 
 # Save or get an artist

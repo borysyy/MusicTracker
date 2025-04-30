@@ -16,7 +16,7 @@ from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, P
 from .models import User, Collection, FriendList, FriendRequest
 from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
 from .spotify import get_results
-from .utils import get_image_hue
+from .utils import get_image_hue, is_color_light
 
 # View for rendering the home page
 def home_view(request):
@@ -88,15 +88,8 @@ def profile_view(request, username):
     collection_form = None
     update_form = None
 
-    # 🔹 Add this helper function inside the view
-    def is_color_light(hex_color):
-        hex_color = hex_color.lstrip("#")
-        r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-        brightness = (r*299 + g*587 + b*114) / 1000
-        return brightness > 186  # >186 = light background
-
     # 🔹 Determine if background is light
-    is_light_bg = is_color_light(profile_user.profile_hue or "#ffffff")  # fallback to white if None
+    is_light_bg = is_color_light(profile_user.profile_hue or "#ffffff") 
 
     if current_user == profile_user:
         collection_form = CollectionForm()
@@ -112,7 +105,7 @@ def profile_view(request, username):
         "current_user": current_user,
         "collection_form": collection_form,
         "update_form": update_form,
-        "is_light_bg": is_light_bg,  # ✅ Add to context
+        "is_light_bg": is_light_bg, 
     }
 
     return render(request, "core/base_profile.html", context)
@@ -138,10 +131,13 @@ def collection_view(request, username, code):
         
     collection.albums_list = albums
     
+    is_light_bg = is_color_light(current_user.profile_hue or "#ffffff") 
+
     context = {
         "collection": collection,
         "current_user": current_user,
-        "update_form": update_form
+        "update_form": update_form,
+        "is_light_bg": is_light_bg
     }
     return render(request, "core/collection.html", context)
 
