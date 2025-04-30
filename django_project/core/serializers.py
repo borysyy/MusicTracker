@@ -1,5 +1,7 @@
-from rest_framework import serializers
 from django.shortcuts import get_object_or_404
+
+from rest_framework import serializers
+
 from .models import User, Collection, Artist, Album
 
 
@@ -32,7 +34,6 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'collection_type', 'thumbnail']
         
     def update(self, instance, validated_data):
-        print(validated_data)  # Debugging output to inspect incoming data
         
         # If no new thumbnail is provided, retain the existing one
         if validated_data["thumbnail"] is None:

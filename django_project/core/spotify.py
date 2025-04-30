@@ -1,8 +1,8 @@
 import spotipy
+
 from django.templatetags.static import static
 from spotipy.oauth2 import SpotifyClientCredentials
 from decouple import config
-from pprint import pprint
 
 client_id = config("SPOTIPY_CLIENT_ID")
 client_secret = config("SPOTIPY_CLIENT_SECRET")

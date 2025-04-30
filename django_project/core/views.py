@@ -1,20 +1,22 @@
-from django.utils import timezone
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import JsonResponse
-from django.urls import reverse
 from django.db import transaction
 from django.db.models import Q
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
+
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, ProfileUpdateForm
 from .models import User, Collection, FriendList, FriendRequest
-from .utils import get_image_hue
-from .spotify import get_results
 from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
+from .spotify import get_results
+from .utils import get_image_hue
 
 # View for rendering the home page
 def home_view(request):
@@ -133,7 +135,7 @@ def collection_view(request, username, code):
     }
     return render(request, "core/collection.html", context)
 
-# View for adding a new collection
+# View for adding a new collection (requires login)
 @login_required
 def add_collection_view(request, username):
     owner = get_object_or_404(User, username=username)
@@ -152,11 +154,11 @@ def add_collection_view(request, username):
         else:
             print("form.errors:\n", collection_form.errors)
 
+# View for handling Spotify search and displaying results (requires login)
 @login_required
 def search_view(request):
     current_user = request.user
     collection_form = CollectionForm()
-
 
     if request.method == "POST":
         user_input = request.POST.get("input", "")
@@ -180,6 +182,7 @@ def search_view(request):
         }
         return render(request, "core/search.html", context)
 
+# View for searching for other users to add as friends (requires login)
 @login_required
 def search_friends_view(request):
     if request.method == "POST":
@@ -206,6 +209,7 @@ def search_friends_view(request):
     else:
         return render(request, "core/add_friends.html")
 
+# View for getting the current user's friend request data (requires login)
 @login_required
 def get_current_requests_view(request):
     outgoing_requests = list(FriendRequest.objects.filter(from_user=request.user, status="pending").values("to_user__username"))

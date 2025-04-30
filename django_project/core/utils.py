@@ -1,11 +1,10 @@
 import os
-import re
 import uuid
-from PIL import Image, ExifTags
 from django.apps import apps
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from colorthief import ColorThief
+from PIL import Image, ExifTags
 
 # Get the dominant color of a profile picture
 def get_image_hue(instance):
@@ -166,9 +165,7 @@ def save_album(album):
     from .models import Album
     
     user, uri, title, release_year, cover_art, artist = album.values()
-    
-    print(album.values())
-    
+        
     album_obj, created = Album.objects.get_or_create(
         user=user,
         uri=uri,
