@@ -4,64 +4,76 @@
 
 {% block main %}
 
-<div 
-    class="align-items-center d-flex justify-content-center text-center"
-    style="height: calc(100vh - 7.5rem)"
->
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h2>Create Account</h2>
+<div class="d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 7.5rem)">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <h2 class="text-center mb-4">Create Account</h2>
 
-    <div class="my-3">
-        <div class="row">
-          <div class="col">
-            <div class="form-floating">
+          <!-- Username and First Name -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <div class="form-floating">
                 {{ form.username }}
                 <label for="{{ form.username.id_for_label }}">Username</label>
+              </div>
             </div>
-          </div>
-  
-          <div class="col">
-            <div class="form-floating">
+            
+            <div class="col-12 col-md-6">
+              <div class="form-floating">
                 {{ form.first_name }}
                 <label for="{{ form.first_name.id_for_label }}">First Name</label>
+              </div>
             </div>
           </div>
-        </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <div class="form-floating">
+              {{ form.password1 }}
+              <label for="{{ form.password1.id_for_label }}">Password</label>
+            </div>
+          </div> 
+          
+          <!-- Password Confirmation -->
+          <div class="mb-3">
+            <div class="form-floating">
+              {{ form.password2 }}
+              <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
+            </div>
+          </div> 
+          
+          <!-- Profile Options -->
+          <div class="mb-4">
+            <div class="row gy-3">
+              <div class="col-12 col-sm-6">
+                <div class="form-check d-flex align-items-center">
+                  {{ form.private }}
+                  <label class="form-check-label ms-2" for="{{ form.private.id_for_label }}">
+                    Private Profile <i class="bi bi-lock"></i>
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div class="d-flex align-items-center flex-nowrap">
+                  <label for="{{ form.profile_picture.id_for_label }}" class="me-2 text-nowrap">Profile Picture</label>
+                  <div class="overflow-hidden">
+                    {{ form.profile_picture }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button class="btn btn-primary p-2 w-100" type="submit">CREATE ACCOUNT</button>
+        </form>
+      </div>
     </div>
-
-    
-    <div class="my-3">
-      <div class="form-floating">
-        {{ form.password1 }}
-        <label for="{{ form.password1.id_for_label }}">Password</label>
-      </div>
-    </div> 
-    
-    <div class="my-3">
-      <div class="form-floating">
-        {{ form.password2 }}
-        <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
-      </div>
-    </div> 
-    
-    
-    <div class="my-3">
-      <div class="row align-items-center">
-        <div class="col-auto">
-            {{ form.private }}
-            <label for="{{ form.private.id_for_label }}">Private Profile</label>
-              <i class="bi bi-lock"></i>
-        </div>
-
-        <div class="col-auto d-flex align-items-center">
-          <label for="{{ form.profile_picture.id_for_label }}" class="me-2">Profile Picture</label>
-          {{ form.profile_picture }}
-        </div>
-      </div>
   </div>
-        <button class="btn btn-primary p-2 w-100" type="submit">CREATE ACCOUNT</button>
-  </form>
 </div>
 
 {% endblock %}
