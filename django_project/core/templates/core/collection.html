@@ -28,6 +28,26 @@
         aspect-ratio: 1 / 1;
     }
 
+    #collection-wrapper.light-bg {
+        color: #000;
+      }
+    
+      #collection-wrapper.light-bg .btn,
+      #collection-wrapper.light-bg a {
+        color: #000 !important;
+        border-color: #000;
+      }
+    
+      #collection-wrapper.dark-bg {
+        color: #fff;
+      }
+    
+      #collection-wrapper.dark-bg .btn,
+      #collection-wrapper.dark-bg a {
+        color: #fff !important;
+        border-color: #fff;
+      }
+
   
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
@@ -46,6 +66,8 @@
 {% endblock %}
 
 {% block main %}
+
+<div id="collection-wrapper" class="{% if is_light_bg %}light-bg{% else %}dark-bg{% endif %}">
 
 {% if not collection.owner.private or current_user == collection.owner %}
 
@@ -69,7 +91,7 @@
 
             {% if current_user.username == collection.owner.username %}
                 <div class="d-flex justify-content-end">
-                    <button style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
+                    <button class="btn" style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
                         Edit Collection <i class="bi bi-pencil"></i>
                     </button>
                 </div>
@@ -122,7 +144,8 @@
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button
-                  class="delete btn p-0"
+                  class="delete btn p-0 text-white"
+                  style="border: none; color: white !important;"
                   onclick="event.preventDefault();"
                   data-bs-toggle="modal"
                   data-bs-target="#delete-music"
@@ -132,14 +155,14 @@
                   data-type="artists"
                   data-user="{{ current_user }}"
                 >
-                  Delete <i class="bi bi-trash"></i>
+                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
               </button>
               {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ artist.name }}</h2>
 
                     <a class="text-decoration-none" href="https://open.spotify.com/artist/{{ artist.uri_last_part }}" target="_blank">
-                        <h3>Spotify <i class="bi bi-spotify"></i> </h3>
+                        <h3 class="text-white">Spotify <i class="bi bi-spotify text-white"></i> </h3>
                     </a>
                             
                 </div>
@@ -159,7 +182,7 @@
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button
-                  class="delete btn p-0"
+                  class="delete btn p-0 text-white"
                   onclick="event.preventDefault();"
                   data-bs-toggle="modal"
                   data-bs-target="#delete-music"
@@ -169,7 +192,7 @@
                   data-type="albums"
                   data-user="{{ current_user }}"
                 >
-                  Delete <i class="bi bi-trash"></i>
+                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
               </button>
               {% endif %}
                 <div class="card-body">
@@ -246,11 +269,14 @@
 
 {% endblock %}
 
+
+
 {% if update_form %}
     {% include "core/includes/update_collection.html" %}
     {% include "core/includes/delete_music.html" %}
 {% endif %}
 
+</div>
 
 {% endblock %}
 
