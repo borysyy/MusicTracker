@@ -113,6 +113,7 @@ def profile_view(request, username):
 # View for displaying a specific collection
 def collection_view(request, username, code):
     collection = get_object_or_404(Collection, code=code)
+    collection_owner = get_object_or_404(User, username=username)
     current_user = request.user
     update_form = None
     
@@ -131,7 +132,7 @@ def collection_view(request, username, code):
         
     collection.albums_list = albums
     
-    is_light_bg = is_color_light(current_user.profile_hue or "#ffffff") 
+    is_light_bg = is_color_light(collection_owner.profile_hue or "#ffffff") 
 
     context = {
         "collection": collection,
