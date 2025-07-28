@@ -71,6 +71,8 @@ services:
       - /etc/letsencrypt/live/jellyfin.shelfsounds.com/fullchain.pem:/etc/letsencrypt/live/jellyfin.shelfsounds.com/fullchain.pem:ro
       - /etc/letsencrypt/live/jellyfin.shelfsounds.com/privkey.pem:/etc/letsencrypt/live/jellyfin.shelfsounds.com/privkey.pem:ro
       - /var/www/certbot:/var/www/certbot
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     depends_on:
       - django-web
