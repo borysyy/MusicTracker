@@ -68,6 +68,10 @@ services:
       - ./django_project/media:/app/media
       - /etc/letsencrypt/live/shelfsounds.com/fullchain.pem:/etc/letsencrypt/live/shelfsounds.com/fullchain.pem:ro
       - /etc/letsencrypt/live/shelfsounds.com/privkey.pem:/etc/letsencrypt/live/shelfsounds.com/privkey.pem:ro
+      - /etc/letsencrypt/live/jellyfin.shelfsounds.com/fullchain.pem:/etc/letsencrypt/live/jellyfin.shelfsounds.com/fullchain.pem:ro
+      - /etc/letsencrypt/live/jellyfin.shelfsounds.com/privkey.pem:/etc/letsencrypt/live/jellyfin.shelfsounds.com/privkey.pem:ro
+      - /var/www/certbot:/var/www/certbot
+
     depends_on:
       - django-web
 
