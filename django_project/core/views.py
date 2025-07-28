@@ -88,8 +88,6 @@ def profile_view(request, username):
     collection_form = None
     update_form = None
 
-    # 🔹 Determine if background is light
-    is_light_bg = is_color_light(profile_user.profile_hue or "#ffffff") 
 
     if current_user == profile_user:
         collection_form = CollectionForm()
@@ -105,7 +103,6 @@ def profile_view(request, username):
         "current_user": current_user,
         "collection_form": collection_form,
         "update_form": update_form,
-        "is_light_bg": is_light_bg, 
     }
 
     return render(request, "core/base_profile.html", context)

@@ -28,26 +28,7 @@
         aspect-ratio: 1 / 1;
     }
 
-    #collection-wrapper.light-bg {
-        color: #000;
-      }
-    
-      #collection-wrapper.light-bg .btn,
-      #collection-wrapper.light-bg a {
-        color: #000 !important;
-        border-color: #000;
-      }
-    
-      #collection-wrapper.dark-bg {
-        color: #fff;
-      }
-    
-      #collection-wrapper.dark-bg .btn,
-      #collection-wrapper.dark-bg a {
-        color: #fff !important;
-        border-color: #fff;
-      }
-
+  
   
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
@@ -67,68 +48,68 @@
 
 {% block main %}
 
-<div id="collection-wrapper" class="{% if is_light_bg %}light-bg{% else %}dark-bg{% endif %}">
+<div>
 
-{% if not collection.owner.private or current_user == collection.owner %}
+    {% if not collection.owner.private or current_user == collection.owner %}
 
-<div class="container mt-2">
-    <div class="row justify-content-start">
-        <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
-            <div>
-                <img class="collection-thumbnail" src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" >
+    <div class="container mt-2">
+        <div class="row justify-content-start">
+            <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
+                <div>
+                    <img class="collection-thumbnail" src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" >
+                </div>
+
+                <div class="color-change" style="white-space: nowrap;">
+                    <h1>{{ collection.name }}</h1>
+                    <h2>Collection by: 
+                        <a href="{% url 'core:profile' collection.owner.username %}" style="color: white">
+                            {{ collection.owner.username }}
+                        </a>
+                    </h2>
+                    <h2 id="collection-type">Type: {{ collection.collection_type }}</h2>
+                    <h3>Date Created: {{ collection.date_created }}</h3>
+                </div>
+
+                {% if current_user.username == collection.owner.username %}
+                    <div class="d-flex justify-content-end">
+                        <button class="btn color-change" style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
+                            Edit Collection <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
+                {% endif %}
+
             </div>
-
-            <div style="white-space: nowrap;">
-                <h1>{{ collection.name }}</h1>
-                <h2>Collection by: 
-                    <a href="{% url 'core:profile' collection.owner.username %}" style="color: white">
-                        {{ collection.owner.username }}
-                    </a>
-                </h2>
-                <h2 id="collection-type">Type: {{ collection.collection_type }}</h2>
-                <h3>Date Created: {{ collection.date_created }}</h3>
-            </div>
-
-            {% if current_user.username == collection.owner.username %}
-                <div class="d-flex justify-content-end">
-                    <button class="btn" style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
-                        Edit Collection <i class="bi bi-pencil"></i>
-                    </button>
-                </div>
-            {% endif %}
-
-        </div>
-        <div class="col-sm-8 col-md-9 col-lg-4">
-            {% if collection.description %}
-                <div class="fs-1">
-                    {{ collection.description }}
-                </div>
-            {% else %}
-                <div class="fs-1">
-                    <i>
-                        No description for this collection
-                    </i>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-    <hr>
-</div>
-
-{% else %}
-
-    <div class="container" >
-        <div class="row">
-            <div class="col text-center">
-                <div class="fs-1">
-                    This User's Profile is Private
-                    <i class="bi bi-incognito"></i>
-                </div>
+            <div class="col-sm-8 col-md-9 col-lg-4 color-change">
+                {% if collection.description %}
+                    <div class="fs-1">
+                        {{ collection.description }}
+                    </div>
+                {% else %}
+                    <div class="fs-1">
+                        <i>
+                            No description for this collection
+                        </i>
+                    </div>
+                {% endif %}
             </div>
         </div>
+        <hr>
     </div>
 
-{% endif %}
+    {% else %}
+
+        <div class="container" >
+            <div class="row">
+                <div class="col text-center">
+                    <div class="fs-1">
+                        This User's Profile is Private
+                        <i class="bi bi-incognito"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
 
 <div>
 

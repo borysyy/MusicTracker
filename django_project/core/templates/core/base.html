@@ -38,9 +38,18 @@
               'X-CSRFToken': '{{ csrf_token }}'  
           }
       });
+
+
+
   </script>
 
+  <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+
   <script src="{% static 'scripts/friend_modals.js' %}" ></script>
+  <script src="{% static 'scripts/brightness.js' %}" ></script>
+
+  
 
   
     <style>
@@ -91,7 +100,7 @@
     {% block script %} {% endblock %}
 
   </head>
-  <body  class="d-flex flex-column min-vh-100 " style="padding-top: 3.75rem">
+  <body  class="d-flex flex-column min-vh-100 " style="padding-top: 3.75rem" data-profile-hue="{{ profile_user.profile_hue }}">
 
     <main class="d-flex flex-column flex-grow-1 flex-shrink-1" > 
         {% include "core/includes/header.html" %}
@@ -131,6 +140,8 @@
   
         {% include "core/includes/footer.html" %}
     </main>
+
+   
       
   </body>
 </html>
