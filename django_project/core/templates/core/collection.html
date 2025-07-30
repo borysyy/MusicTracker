@@ -64,7 +64,7 @@
                             {{ collection.owner.username }}
                         </a>
                     </h2>
-                    <h2 id="collection-type">Type: {{ collection.collection_type }}</h2>
+                    <h2>Type: {{ collection.collection_type }}</h2>
                     <h3>Date Created: {{ collection.date_created }}</h3>
                 </div>
 
@@ -201,7 +201,6 @@
         $('#delete-music').on('show.bs.modal', event => {
             $('.modal-body').data('type', $(event.relatedTarget).data('type'))
             $('.modal-body').data('music', $(event.relatedTarget).data('name'))
-
 
             $('.modal-body .name').text('Delete ' + $(event.relatedTarget).data('name'))
             $('.modal-body .collection').text('From ' + $(event.relatedTarget).data('collection'))

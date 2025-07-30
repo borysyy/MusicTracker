@@ -1,5 +1,3 @@
-{% load static %}
-
 <form id="updateUserForm" action="{% url 'core:update_profile' current_user %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
       <div class="modal fade" id="updateProfile" tabindex="-1" aria-hidden="true">
@@ -14,11 +12,7 @@
                         <div class="text-start">
                             Profile picture:
                             <div class="profile-img-circle" style="width: 200px; height: 200px">
-                                {% if update_form.profile_picture.value %}
-                                    <img id="preview" src="{{ update_form.profile_picture.value.url }}" alt="Profile Picture">
-                                {% else %}
-                                    <img id="preview" src="{% static 'default/default-profile.jpg' %}" alt="Profile Picture">
-                                {% endif %}
+                                <img id="preview" src="{{ update_form.profile_picture.value.url }}" alt="Profile Picture">
                             </div>
                             <label for="{{ update_form.profile_picture.id_for_label }}">Edit Profile Picture:</label>
                             {{ update_form.profile_picture }}

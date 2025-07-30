@@ -37,8 +37,8 @@
       <div class="d-flex align-items-center">
         <div class="dropdown">
           <button class="btn profile-btn" data-bs-toggle="dropdown">
-            {% if user.profile_picture %}
-              <img src="{{ user.profile_picture.url }}" alt="{{ user.username }} profile picture" class="profile-pic">
+            {% if user.is_authenticated %}
+              <img src="{{ user.profile_picture.url }}" alt="{{user.username}} profile picture" class="profile-pic">
             {% else %}
               <img src="{% static 'default/default-profile.jpg' %}" alt="Default profile picture" class="profile-pic">
             {% endif %}
@@ -63,10 +63,10 @@
               </li>
             {% else %}
               <li>
-                <a class="dropdown-item" href="{% url 'core:register' %}"">Create Account</a>
+                <a class="dropdown-item" href={% url 'core:register' %}>Create Account</a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url 'core:login' %}"">Login</a>
+                <a class="dropdown-item" href={% url 'core:login' %}>Login</a>
               </li>
             {% endif %}
           </ul>
