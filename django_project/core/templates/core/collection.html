@@ -28,27 +28,10 @@
         aspect-ratio: 1 / 1;
     }
 
-    #collection-wrapper.light-bg {
-        color: #000;
-      }
-    
-      #collection-wrapper.light-bg .btn,
-      #collection-wrapper.light-bg a {
-        color: #000 !important;
-        border-color: #000;
-      }
-    
-      #collection-wrapper.dark-bg {
-        color: #fff;
-      }
-    
-      #collection-wrapper.dark-bg .btn,
-      #collection-wrapper.dark-bg a {
-        color: #fff !important;
-        border-color: #fff;
-      }
+    .delete {
+        border-color: white;
+    }
 
-  
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
         body {
@@ -67,68 +50,68 @@
 
 {% block main %}
 
-<div id="collection-wrapper" class="{% if is_light_bg %}light-bg{% else %}dark-bg{% endif %}">
+<div>
 
-{% if not collection.owner.private or current_user == collection.owner %}
+    {% if not collection.owner.private or current_user == collection.owner %}
 
-<div class="container mt-2">
-    <div class="row justify-content-start">
-        <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
-            <div>
-                <img class="collection-thumbnail" src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" >
+    <div class="container mt-2">
+        <div class="row justify-content-start">
+            <div class="col-sm-2 col-md-3 col-lg-8 d-flex flex-column align-items-center flex-wrap">
+                <div>
+                    <img class="collection-thumbnail" src="{{ collection.thumbnail.url }}" alt="Collection Thumbnail" >
+                </div>
+
+                <div class="color-change" style="white-space: nowrap;">
+                    <h1>{{ collection.name }}</h1>
+                    <h2>Collection by: 
+                        <a class="color-change" href="{% url 'core:profile' collection.owner.username %}">
+                            {{ collection.owner.username }}
+                        </a>
+                    </h2>
+                    <h2>Type: {{ collection.collection_type }}</h2>
+                    <h3>Date Created: {{ collection.date_created }}</h3>
+                </div>
+
+                {% if current_user.username == collection.owner.username %}
+                    <div class="d-flex justify-content-end">
+                        <button class="btn color-change" style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
+                            Edit Collection <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
+                {% endif %}
+
             </div>
-
-            <div style="white-space: nowrap;">
-                <h1>{{ collection.name }}</h1>
-                <h2>Collection by: 
-                    <a href="{% url 'core:profile' collection.owner.username %}" style="color: white">
-                        {{ collection.owner.username }}
-                    </a>
-                </h2>
-                <h2 id="collection-type">Type: {{ collection.collection_type }}</h2>
-                <h3>Date Created: {{ collection.date_created }}</h3>
-            </div>
-
-            {% if current_user.username == collection.owner.username %}
-                <div class="d-flex justify-content-end">
-                    <button class="btn" style="background-color: transparent; border: none" data-bs-toggle="modal" data-bs-target="#updateCollection">
-                        Edit Collection <i class="bi bi-pencil"></i>
-                    </button>
-                </div>
-            {% endif %}
-
-        </div>
-        <div class="col-sm-8 col-md-9 col-lg-4">
-            {% if collection.description %}
-                <div class="fs-1">
-                    {{ collection.description }}
-                </div>
-            {% else %}
-                <div class="fs-1">
-                    <i>
-                        No description for this collection
-                    </i>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-    <hr>
-</div>
-
-{% else %}
-
-    <div class="container" >
-        <div class="row">
-            <div class="col text-center">
-                <div class="fs-1">
-                    This User's Profile is Private
-                    <i class="bi bi-incognito"></i>
-                </div>
+            <div class="col-sm-8 col-md-9 col-lg-4 color-change">
+                {% if collection.description %}
+                    <div class="fs-1">
+                        {{ collection.description }}
+                    </div>
+                {% else %}
+                    <div class="fs-1">
+                        <i>
+                            No description for this collection
+                        </i>
+                    </div>
+                {% endif %}
             </div>
         </div>
+        <hr>
     </div>
 
-{% endif %}
+    {% else %}
+
+        <div class="container" >
+            <div class="row">
+                <div class="col text-center">
+                    <div class="fs-1">
+                        This User's Profile is Private
+                        <i class="bi bi-incognito"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
 
 <div>
 
@@ -140,31 +123,28 @@
                 {% if artist.image %}
                     <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% else %}
-                    <img src="{% static "default/default.jpg" %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
+                    <img src="{% static 'default/default.jpg' %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
-                <button
-                  class="delete btn p-0 text-white"
-                  style="border: none; color: white !important;"
-                  onclick="event.preventDefault();"
-                  data-bs-toggle="modal"
-                  data-bs-target="#delete-music"
-                  data-name="{{ artist.name }}"
-                  data-code="{{ collection.code }}"
-                  data-collection="{{ collection.name }}"
-                  data-type="artists"
-                  data-user="{{ current_user }}"
-                >
-                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
-              </button>
+                    <button
+                    class="delete btn p-0 text-white"
+                    onclick="event.preventDefault();"
+                    data-bs-toggle="modal"
+                    data-bs-target="#delete-music"
+                    data-name="{{ artist.name }}"
+                    data-code="{{ collection.code }}"
+                    data-collection="{{ collection.name }}"
+                    data-type="artists"
+                    data-user="{{ current_user }}"
+                    >
+                    <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
+                </button>
               {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ artist.name }}</h2>
-
                     <a class="text-decoration-none" href="https://open.spotify.com/artist/{{ artist.uri_last_part }}" target="_blank">
                         <h3 class="text-white">Spotify <i class="bi bi-spotify text-white"></i> </h3>
                     </a>
-                            
                 </div>
             </div>
         </div>
@@ -178,7 +158,7 @@
                 {% if album.cover_art %}
                     <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% else %}
-                    <img src="{% static "default/default.jpg" %} %}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                    <img src="{% static 'default/default.jpg' %}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button
@@ -192,19 +172,16 @@
                   data-type="albums"
                   data-user="{{ current_user }}"
                 >
-                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
+                <span class="text-white delete-btn">Delete</span><i class="bi bi-trash text-white"></i>
               </button>
               {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ album.title }}</h2>
                     <h3 class="card-title">{{ album.artist }}</h3>
                     <h4 class="card-title">{{ album.release_year }}</h4>
-                    
                     <a class="text-decoration-none" href="https://open.spotify.com/album/{{ album.uri_last_part }}" target="_blank">
                         <h4>Spotify <i class="bi bi-spotify"></i> </h4>
                     </a>
-
-                    
                 </div>
             </div>
         </div>
@@ -227,7 +204,6 @@
         $('#delete-music').on('show.bs.modal', event => {
             $('.modal-body').data('type', $(event.relatedTarget).data('type'))
             $('.modal-body').data('music', $(event.relatedTarget).data('name'))
-
 
             $('.modal-body .name').text('Delete ' + $(event.relatedTarget).data('name'))
             $('.modal-body .collection').text('From ' + $(event.relatedTarget).data('collection'))
