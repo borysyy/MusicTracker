@@ -16,7 +16,7 @@ from .forms import CustomUserCreationForm, AuthenticationForm, CollectionForm, P
 from .models import User, Collection, FriendList, FriendRequest
 from .serializers import UserSerializer, CollectionSerializer, CollectionSaveSerializer
 from .spotify import get_results
-from .utils import get_image_hue, is_color_light
+from .utils import get_image_hue
 
 # View for rendering the home page
 def home_view(request):
