@@ -28,6 +28,10 @@
         aspect-ratio: 1 / 1;
     }
 
+    .delete {
+        border-color: white;
+    }
+
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
         body {
@@ -124,7 +128,6 @@
                 {% if current_user == collection.owner %}
                     <button
                     class="delete btn p-0 text-white"
-                    style="border: none; color: white !important;"
                     onclick="event.preventDefault();"
                     data-bs-toggle="modal"
                     data-bs-target="#delete-music"
@@ -169,7 +172,7 @@
                   data-type="albums"
                   data-user="{{ current_user }}"
                 >
-                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
+                <span class="text-white delete-btn">Delete</span><i class="bi bi-trash text-white"></i>
               </button>
               {% endif %}
                 <div class="card-body">
