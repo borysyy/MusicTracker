@@ -62,7 +62,7 @@
                 <div class="color-change" style="white-space: nowrap;">
                     <h1>{{ collection.name }}</h1>
                     <h2>Collection by: 
-                        <a href="{% url 'core:profile' collection.owner.username %}" style="color: white">
+                        <a class="color-change" href="{% url 'core:profile' collection.owner.username %}">
                             {{ collection.owner.username }}
                         </a>
                     </h2>
@@ -121,7 +121,7 @@
                 {% if artist.image %}
                     <img src="{{ artist.image }}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% else %}
-                    <img src="{% static "default/default.jpg" %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
+                    <img src="{% static 'default/default.jpg' %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button
@@ -159,7 +159,7 @@
                 {% if album.cover_art %}
                     <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% else %}
-                    <img src="{% static "default/default.jpg" %} %}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                    <img src="{% static 'default/default.jpg' %} %}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button

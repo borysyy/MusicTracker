@@ -60,22 +60,22 @@
       }
 
       .profile-btn {
-        padding: 0; /* Remove default padding */
-        border: none; /* Remove default border */
-        background: none; /* Remove default background */
-        border-radius: 50%; /* Make the button round */
-        width: 50px; /* Match the profile picture size */
-        height: 50px; /* Match the profile picture size */
-        display: flex; /* Center the image inside the button */
-        align-items: center; /* Vertical alignment */
-        justify-content: center; /* Horizontal alignment */
-        overflow: hidden; /* Ensure the image doesn't overflow */
+        padding: 0; 
+        border: none;
+        background: none; 
+        border-radius: 50%; 
+        width: 50px; 
+        height: 50px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        overflow: hidden;
       }
 
       .profile-pic {
-        width: 100%; /* Make the image fill the button */
-        height: 100%; /* Make the image fill the button */
-        object-fit: cover; /* Ensure the image covers the button area */
+        width: 100%; 
+        height: 100%;
+        object-fit: cover;
       }
 
       body {
@@ -100,7 +100,7 @@
     {% block script %} {% endblock %}
 
   </head>
-  <body  class="d-flex flex-column min-vh-100 " style="padding-top: 3.75rem" data-profile-hue="{{ profile_user.profile_hue }}">
+  <body  class="d-flex flex-column min-vh-100 " style="padding-top: 3.75rem">
 
     <main class="d-flex flex-column flex-grow-1 flex-shrink-1" > 
         {% include "core/includes/header.html" %}
