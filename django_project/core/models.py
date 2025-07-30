@@ -17,7 +17,6 @@ class User(AbstractUser):
     private = models.BooleanField(default=False)
     profile_picture = models.ImageField(
         upload_to="profile_pictures/",
-        default="profile_pictures/default_profile.jpg",
         null=True,
         blank=True
     )

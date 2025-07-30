@@ -32,24 +32,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     
     <script>
-      // Automatically set CSRF token for every AJAX request
-      $.ajaxSetup({
-          headers: {
-              'X-CSRFToken': '{{ csrf_token }}'  
-          }
-      });
+        // Automatically set CSRF token for every AJAX request
+        $.ajaxSetup({
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  
+            }
+        });
 
+    </script>
 
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
 
-  </script>
-
-  <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
-
-
-  <script src="{% static 'scripts/friend_modals.js' %}" ></script>
-  <script src="{% static 'scripts/brightness.js' %}" ></script>
-
-  
+    <script src="{% static 'scripts/friend_modals.js' %}" ></script>
+    <script src="{% static 'scripts/brightness.js' %}" ></script>
 
   
     <style>

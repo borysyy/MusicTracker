@@ -28,8 +28,6 @@
         aspect-ratio: 1 / 1;
     }
 
-  
-  
     {% if not collection.owner.private or current_user.username == collection.owner.username %}
 
         body {
@@ -124,28 +122,26 @@
                     <img src="{% static 'default/default.jpg' %}" class="card-img-top border-bottom border-white" alt="{{ artist.name }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
-                <button
-                  class="delete btn p-0 text-white"
-                  style="border: none; color: white !important;"
-                  onclick="event.preventDefault();"
-                  data-bs-toggle="modal"
-                  data-bs-target="#delete-music"
-                  data-name="{{ artist.name }}"
-                  data-code="{{ collection.code }}"
-                  data-collection="{{ collection.name }}"
-                  data-type="artists"
-                  data-user="{{ current_user }}"
-                >
-                <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
-              </button>
+                    <button
+                    class="delete btn p-0 text-white"
+                    style="border: none; color: white !important;"
+                    onclick="event.preventDefault();"
+                    data-bs-toggle="modal"
+                    data-bs-target="#delete-music"
+                    data-name="{{ artist.name }}"
+                    data-code="{{ collection.code }}"
+                    data-collection="{{ collection.name }}"
+                    data-type="artists"
+                    data-user="{{ current_user }}"
+                    >
+                    <span class="text-white">Delete</span><i class="bi bi-trash text-white"></i>
+                </button>
               {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ artist.name }}</h2>
-
                     <a class="text-decoration-none" href="https://open.spotify.com/artist/{{ artist.uri_last_part }}" target="_blank">
                         <h3 class="text-white">Spotify <i class="bi bi-spotify text-white"></i> </h3>
                     </a>
-                            
                 </div>
             </div>
         </div>
@@ -159,7 +155,7 @@
                 {% if album.cover_art %}
                     <img src="{{ album.cover_art }}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% else %}
-                    <img src="{% static 'default/default.jpg' %} %}" class="card-img-top border-bottom" alt="{{ album.title }}">
+                    <img src="{% static 'default/default.jpg' %}" class="card-img-top border-bottom" alt="{{ album.title }}">
                 {% endif %}
                 {% if current_user == collection.owner %}
                 <button
@@ -180,12 +176,9 @@
                     <h2 class="card-title">{{ album.title }}</h2>
                     <h3 class="card-title">{{ album.artist }}</h3>
                     <h4 class="card-title">{{ album.release_year }}</h4>
-                    
                     <a class="text-decoration-none" href="https://open.spotify.com/album/{{ album.uri_last_part }}" target="_blank">
                         <h4>Spotify <i class="bi bi-spotify"></i> </h4>
                     </a>
-
-                    
                 </div>
             </div>
         </div>
