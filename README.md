@@ -1,7 +1,5 @@
 # Shelfsounds
 
-A personal project that turned into a final project for my Unix Networking class for the Spring 2025 semester. 
-
 This is a music tracking website, where users create an account and collections that store music. Example of collections include:
 
 - Favorite Artists of all time
