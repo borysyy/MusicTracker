@@ -38,6 +38,13 @@ For example, if I look up the album `Innerspeaker` by Tame Impala, I should expe
 
 Here are demo videos representing both cases:
 
+Searching an album:
+
+[album-top.webm](https://github.com/user-attachments/assets/18db9ef0-67ef-4701-86e3-08a8b325a47f)
+
+Searching an artist:
+
+[artist-top.webm](https://github.com/user-attachments/assets/7ed4d490-efb2-4b6e-b8a2-e924175a0f39)
 
 The user is then able to click on an artist or album and choose a collection for them to save it to.
 
@@ -74,4 +81,6 @@ The album art and artist images are saved as URLFields. I save the url provided 
 # Demo
 
 Here is a demo video showcasing how searching works:
+
+[demo.webm](https://github.com/user-attachments/assets/1b761209-2535-452d-ab99-cbc1e3f1916a)
 
