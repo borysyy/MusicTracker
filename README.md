@@ -80,7 +80,7 @@ The album art and artist images are saved as URLFields. I save the url provided 
 
 # Demo
 
-Here is a demo video showcasing how searching works:
+Here is a demo video showcasing how searching and saving works:
 
 [demo.webm](https://github.com/user-attachments/assets/1b761209-2535-452d-ab99-cbc1e3f1916a)
 
