@@ -13,7 +13,7 @@ Spotify API: https://developer.spotify.com/documentation/web-api
 
 That's also when I realized that I can create a website that isn't just for me, but for anyone else that would like to easily showcase music they enjoy.
 
-# What makes Shelfsounds different
+# What Makes Shelfsounds Different
 
 Shelfsounds is more for cataloging and reflection. It is to show off music you consider to be important in your life. Also to show off your real life collections, such as records, CDs, and maybe even concerts you've been to. It is up to you what you want to showcase to others and with the friends list feature this becomes even easier. 
 
